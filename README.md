@@ -119,6 +119,5 @@ Evolución del sistema hacia una arquitectura más escalable:
 - Nelcy Lucia Zapata Gil– 22502267
 - Valentina Isaza Ospina - 22502266
 - Oscar Fernando Pulgarin – 22500224
-Proyecto académico desarrollado en el marco de técnicas avanzadas de IA aplicadas a modelos de lenguaje.
 
 ---
