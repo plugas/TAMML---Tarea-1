@@ -177,8 +177,6 @@ El pipeline de construcción genera tres archivos en `data/knowledge/`:
 
 ```
 TAMML---Tarea-1/
-├── .env                          # Credenciales de API (no versionado)
-├── .env.example                  # Plantilla de credenciales
 ├── .gitignore
 ├── pyproject.toml                # Dependencias y configuración del paquete
 ├── uv.lock                       # Lock file reproducible
