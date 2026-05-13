@@ -33,7 +33,7 @@ El sistema fue desarrollado bajo una arquitectura basada en **context stuffing (
 - **Interfaz de usuario:** Gradio  
 - **Estrategia de conocimiento:** Prompt Engineering con contexto completo  
 
-El conocimiento de la empresa fue previamente extraído mediante web scraping, limpiado y consolidado en un único archivo de texto que actúa como **memoria del sistema**.
+El conocimiento de la empresa fue previamente extraído mediante web scraping, limpiado y consolidado en un único archivo Markdown que actúa como **memoria del sistema**.
 
 ---
 
@@ -64,9 +64,10 @@ Se implementó una interfaz web utilizando **Gradio**, que permite:
 El sistema se alimenta de un corpus construido a partir de:
 
 - Web scraping del sitio oficial de Riopaila Castilla  
-- Extracción de secciones relevantes (productos, empresa, sostenibilidad, etc.)  
+- Extracción de posts de LinkedIn e Instagram  
+- Descarga y lectura de documentos PDF del portal SIMEV (Superfinanciera)  
 - Limpieza y normalización del texto  
-- Consolidación en un único archivo de contexto (`.txt`)
+- Consolidación en un único archivo de contexto en formato **Markdown** (`.md`)
 
 ---
 
@@ -93,12 +94,15 @@ Se realizaron pruebas con **más de 20 preguntas**, evaluando:
 
 ## Tecnologías utilizadas
 
-- Python   
+- Python  
+- uv (gestión de entorno y dependencias)  
 - LangChain  
 - Gradio  
-- ChatGroq API   
-- Qwen3-32B   
-- BeautifulSoup & Requests (Web Scraping)
+- ChatGroq API  
+- Qwen3-32B  
+- Selenium & BeautifulSoup (Web Scraping)  
+- pdfplumber (lectura de PDFs)  
+- Makefile (automatización de tareas)
 
 ---
 
@@ -116,8 +120,93 @@ Evolución del sistema hacia una arquitectura más escalable:
 
 ## Autores
 
-- Nelcy Lucia Zapata Gil– 22502267
+- Nelcy Lucia Zapata Gil – 22502267
 - Valentina Isaza Ospina - 22502266
 - Oscar Fernando Pulgarin – 22500224
+- Juan Andres Lopez - 2226490
 
 ---
+
+## Apartado técnico
+
+### Gestión del entorno con uv
+
+El proyecto utiliza [uv](https://github.com/astral-sh/uv) como gestor de entorno virtual y dependencias, reemplazando el flujo tradicional de `pip` + `venv`. Todas las dependencias están declaradas en `pyproject.toml` y el entorno se reproduce de forma exacta mediante `uv.lock`.
+
+Para instalar el entorno desde cero:
+
+```bash
+uv sync
+```
+
+### Automatización con Makefile
+
+Las tareas del proyecto se ejecutan mediante `make`, evitando tener que recordar comandos largos. Los comandos disponibles son:
+
+| Comando | Descripción |
+|---------|-------------|
+| `make app` | Lanza la interfaz Gradio del chatbot |
+| `make scrape-web` | Extrae contenido del sitio web de Riopaila |
+| `make scrape-linkedin` | Extrae posts de LinkedIn |
+| `make scrape-instagram` | Extrae posts de Instagram y otras redes |
+| `make scrape-simev` | Extrae hechos relevantes de SIMEV y descarga PDFs |
+| `make scrape-all` | Ejecuta todos los scrapers en secuencia |
+| `make merge` | Consolida los reportes en un único archivo Markdown |
+| `make clean-ctx` | Limpia el archivo de conocimiento para el LLM |
+| `make build-knowledge` | Pipeline completo: merge + limpieza |
+| `make help` | Lista todos los comandos disponibles |
+
+El flujo completo de uso es:
+
+```bash
+make scrape-all       # 1. Recolectar información
+make build-knowledge  # 2. Consolidar y limpiar el contexto
+make app              # 3. Lanzar el chatbot
+```
+
+### Contexto en formato Markdown
+
+El archivo de conocimiento que se pasa al modelo está en formato **Markdown** (`.md`) en lugar de texto plano. Esto permite al LLM aprovechar la estructura semántica del documento: los encabezados `##` y `###` indican secciones, las tablas organizan datos clave, y los bloques `>` destacan publicaciones de redes sociales. El resultado es una mejor comprensión del contexto y respuestas más precisas.
+
+El pipeline de construcción genera tres archivos en `data/knowledge/`:
+
+1. `riopaila_castilla.md` — consolidación directa de todos los reportes
+2. `riopaila_castilla_clean.md` — versión limpia que consume el modelo ✅
+
+### Estructura del proyecto
+
+```
+TAMML---Tarea-1/
+├── .env                          # Credenciales de API (no versionado)
+├── .env.example                  # Plantilla de credenciales
+├── .gitignore
+├── pyproject.toml                # Dependencias y configuración del paquete
+├── uv.lock                       # Lock file reproducible
+├── Makefile                      # Comandos de automatización
+├── README.md
+│
+├── src/
+│   └── riopaila_chatbot/
+│       ├── app.py                # Interfaz Gradio + cadena LangChain
+│       └── scrapers/
+│           ├── web.py            # Scraper del sitio web oficial
+│           ├── linkedin.py       # Scraper de LinkedIn
+│           ├── instagram.py      # Scraper de Instagram y otras redes
+│           └── simev.py          # Scraper de SIMEV + descarga de PDFs
+│
+├── scripts/
+│   ├── merge_reports.py          # Consolida reportes en un único .md
+│   └── clean_context.py          # Limpia el contexto para el LLM
+│
+├── data/
+│   ├── knowledge/
+│   │   ├── riopaila_castilla.md       # Contexto consolidado
+│   │   └── riopaila_castilla_clean.md # Contexto limpio (usado por el modelo)
+│   └── pdfs/                          # PDFs descargados de SIMEV
+│
+└── reports/                      # Reportes individuales por fuente (.md)
+    ├── reporte_web_riopaila.md
+    ├── reporte_linkedin_posts_riopaila.md
+    ├── reporte_instagram_posts_riopaila.md
+    └── reporte_simev_riopaila.md
+```

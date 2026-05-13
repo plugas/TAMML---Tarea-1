@@ -1,0 +1,26 @@
+# Credenciales y configuración local
+.env
+
+# Entorno virtual de uv
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# uv lock
+# uv.lock se puede incluir para reproducibilidad; descomenta si no lo quieres versionar
+# uv.lock
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+.claude

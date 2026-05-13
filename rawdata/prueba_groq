@@ -1,9 +1,0 @@
-from groq import Groq
-
-client = Groq(api_key="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")
-
-completion = client.chat.completions.create(
-    model="llama-3.3-70b-versatile", # Un modelo potentísimo y gratis
-    messages=[{"role": "user", "content": "Hola"}]
-)
-print(completion.choices[0].message.content)
