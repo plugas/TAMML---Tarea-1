@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := help
 
 # ── Aplicación ─────────────────────────────────────────────────────────────────
-app:             ## Lanza la interfaz Gradio del chatbot
-	uv run python -m riopaila_chatbot.app
+app:             ## [Módulo 2] Lanza la interfaz Streamlit del agente conversacional
+	uv run python run_app.py
 
 # ── Scrapers ───────────────────────────────────────────────────────────────────
 scrape-web:      ## Extrae contenido del sitio web de Riopaila
@@ -18,10 +18,10 @@ scrape-simev:    ## Extrae reportes de SIMEV y descarga PDFs
 	uv run python -m riopaila_chatbot.scrapers.simev
 
 scrape-all:      ## Ejecuta todos los scrapers en secuencia
-	MAKE scrape-web
-	MAKE scrape-simev
-	MAKE scrape-linkedin
-	MAKE  scrape-instagram
+	make scrape-web
+	make scrape-simev
+	make scrape-linkedin
+	make scrape-instagram
 
 # ── Pipeline de conocimiento ───────────────────────────────────────────────────
 merge:           ## Une todos los reportes .md en data/knowledge/riopaila_castilla.md
@@ -31,6 +31,14 @@ clean-ctx:       ## Limpia y optimiza el archivo de conocimiento para el LLM
 	uv run python scripts/clean_context.py
 
 build-knowledge: ## Pipeline completo: merge + limpieza del contexto
-	MAKE merge
-	MAKE clean-ctx
+	make merge
+	make clean-ctx
 
+# ── Módulo 2: RAG con embeddings ───────────────────────────────────────────────
+ingest:          ## [Módulo 2] Genera embeddings y sube chunks a Supabase pgvector
+	uv run python -m riopaila_rag.ingest
+
+# ── Ayuda ──────────────────────────────────────────────────────────────────────
+help:            ## Muestra esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	  awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
