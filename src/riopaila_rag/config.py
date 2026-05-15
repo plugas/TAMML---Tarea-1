@@ -43,8 +43,7 @@ LANGCHAIN_API_KEY: str = _optional("LANGCHAIN_API_KEY")
 LANGCHAIN_PROJECT: str = _optional("LANGCHAIN_PROJECT", "riopaila-agent-module2")
 
 # ── Chunking (ajustable sin tocar código) ─────────────────────────────────────
-CHUNK_SIZE: int = int(_optional("CHUNK_SIZE", "800"))
-CHUNK_OVERLAP: int = int(_optional("CHUNK_OVERLAP", "120"))
+CHUNK_SIZE: int = int(_optional("CHUNK_SIZE", "1200"))
 
 # ── Retrieval ─────────────────────────────────────────────────────────────────
 RAG_TOP_K: int = int(_optional("RAG_TOP_K", "5"))
@@ -65,7 +64,7 @@ def check_openai() -> None:
 
 def check_supabase() -> None:
     """Lanza error claro si faltan credenciales de Supabase."""
-    missing = [k for k in ("SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_DB_URL")
+    missing = [k for k in ("SUPABASE_URL", "SUPABASE_KEY")
                if not os.getenv(k, "").strip()]
     if missing:
         raise EnvironmentError(

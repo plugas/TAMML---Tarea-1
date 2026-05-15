@@ -25,16 +25,19 @@ scrape-all:      ## Ejecuta todos los scrapers en secuencia
 
 # ── Pipeline de conocimiento ───────────────────────────────────────────────────
 merge:           ## Une todos los reportes .md en data/knowledge/riopaila_castilla.md
-	uv run python scripts/merge_reports.py
+	uv run python src/scripts/merge_reports.py
 
 clean-ctx:       ## Limpia y optimiza el archivo de conocimiento para el LLM
-	uv run python scripts/clean_context.py
+	uv run python src/scripts/clean_context.py
 
 build-knowledge: ## Pipeline completo: merge + limpieza del contexto
 	make merge
 	make clean-ctx
 
 # ── Módulo 2: RAG con embeddings ───────────────────────────────────────────────
+convert-pdfs:    ## [Módulo 2] Convierte PDFs en data/pdfs/ a Markdown
+	uv run python src/scripts/convert_pdfs.py
+
 ingest:          ## [Módulo 2] Genera embeddings y sube chunks a Supabase pgvector
 	uv run python -m riopaila_rag.ingest
 

@@ -96,6 +96,7 @@ MENU_NAV = [
     ("Resumen", "Resumen", "doc"),
     ("FAQ (Preguntas Frecuentes)", "FAQ", "faq"),
     ("Q&A (Haz tu pregunta)", "Q&A", "chat"),
+    ("Agente (RAG + Tools)", "Agente", "agent"),
 ]
 
 PAGINAS_VALIDAS = {pid for _, pid, _ in MENU_NAV}
@@ -105,6 +106,7 @@ NAV_MATERIAL_ICON: dict[str, str] = {
     "doc": ":material/description:",
     "faq": ":material/help:",
     "chat": ":material/forum:",
+    "agent": ":material/smart_toy:",
 }
 
 PLACEHOLDER_Q = "¿Cuál es la historia de Riopaila Castillo?"
@@ -130,6 +132,23 @@ QA_EJEMPLO_PREGUNTAS: list[tuple[str, str]] = [
     ("¿Dónde están ubicadas sus operaciones?", ":material/location_on:"),
     ("¿Qué iniciativas de sostenibilidad tiene la empresa?", ":material/eco:"),
     ("¿Cómo puedo contactar a la empresa?", ":material/call:"),
+]
+
+# Tarjetas sugeridas del Agente (mismo patrón que Q&A pero adaptado al RAG)
+AGENTE_QUICK_TOPICS: list[tuple[str, str, str]] = [
+    ("Cifras clave", "¿Cuántos empleados tiene Riopaila Castilla y cuál es su capacidad de producción?", ":material/insights:"),
+    ("Datos de contacto", "¿Cuáles son los canales de contacto oficiales de la empresa?", ":material/contact_phone:"),
+    ("Certificaciones", "¿Qué certificaciones y normas tiene Riopaila Castilla?", ":material/verified:"),
+    ("Sostenibilidad", "¿Qué metas e iniciativas de sostenibilidad reporta la empresa?", ":material/eco:"),
+]
+
+# Panel izquierdo Agente: (pregunta, icono)
+AGENTE_EJEMPLO_PREGUNTAS: list[tuple[str, str]] = [
+    ("¿Cuál es el NIT de Riopaila Castilla?", ":material/badge:"),
+    ("Cuéntame la historia de la empresa", ":material/history_edu:"),
+    ("¿Cuáles son las líneas de negocio?", ":material/category:"),
+    ("¿Qué reporta el último informe de sostenibilidad?", ":material/description:"),
+    ("¿Quiénes integran la Junta Directiva?", ":material/groups:"),
 ]
 
 # Módulo 1 — al menos 20 preguntas de prueba (informe / demo); cargan el campo Q&A al pulsar.
@@ -186,6 +205,13 @@ _FEAT = {
     "illo_qa": (
         '<span class="material-symbols-outlined feat-illo-material feat-illo-material--burgundy" '
         'aria-hidden="true">forum</span>'
+    ),
+    "icon_agent": (
+        '<span class="material-symbols-outlined feat-head-material" aria-hidden="true">smart_toy</span>'
+    ),
+    "illo_agent": (
+        '<span class="material-symbols-outlined feat-illo-material feat-illo-material--agent" '
+        'aria-hidden="true">smart_toy</span>'
     ),
 }
 
@@ -777,6 +803,12 @@ def inyectar_estilos_globales() -> None:
             .feat-head-yellow {{ background: {C_YELLOW_SOFT}; }}
             .feat-head-yellow .feat-head-title {{ color: {C_BURGUNDY}; }}
             .feat-head-yellow .feat-head-sub {{ color: {C_BURGUNDY_SUB}; }}
+            .feat-head-agent {{
+                background: linear-gradient(135deg, {C_GREEN_SOFT} 0%, {C_ORANGE_SOFT} 100%);
+            }}
+            .feat-head-agent .feat-head-title {{ color: {C_GREEN}; }}
+            .feat-head-agent .feat-head-sub {{ color: {C_ORANGE_SUB}; }}
+            .feat-head-agent .feat-head-material {{ color: {C_GREEN}; }}
 
             .feat-body-white {{
                 background: {C_WHITE};
@@ -812,6 +844,9 @@ def inyectar_estilos_globales() -> None:
             }}
             [data-testid="stMain"] .feat-illo-material.feat-illo-material--burgundy {{
                 color: {C_BURGUNDY} !important;
+            }}
+            [data-testid="stMain"] .feat-illo-material.feat-illo-material--agent {{
+                color: {C_ORANGE} !important;
             }}
             .feat-desc {{
                 margin: 0;
@@ -853,11 +888,14 @@ def inyectar_estilos_globales() -> None:
             }}
             .feat-grid {{
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 18px;
                 align-items: stretch;
             }}
-            @media (max-width: 900px) {{
+            @media (max-width: 1200px) {{
+                .feat-grid {{ grid-template-columns: repeat(2, 1fr); }}
+            }}
+            @media (max-width: 700px) {{
                 .feat-grid {{ grid-template-columns: 1fr; }}
             }}
             .feat-col {{
@@ -935,6 +973,15 @@ def inyectar_estilos_globales() -> None:
                 filter: brightness(1.06);
                 color: #ffffff;
             }}
+            .feat-btn--agent {{
+                background: linear-gradient(135deg, {C_GREEN} 0%, {C_ORANGE} 100%);
+                color: #ffffff;
+            }}
+            .feat-btn--agent:hover {{
+                background: linear-gradient(135deg, #145214 0%, {C_ORANGE_HOVER} 100%);
+                filter: brightness(1.05);
+                color: #ffffff;
+            }}
             /* Texto de los enlaces-boton (Streamlit envuelve con span y .main span usa !important) */
             a.feat-btn.feat-btn--green,
             a.feat-btn.feat-btn--green:visited,
@@ -958,6 +1005,14 @@ def inyectar_estilos_globales() -> None:
             a.feat-btn.feat-btn--yellow *,
             a.feat-btn.feat-btn--yellow:visited *,
             a.feat-btn.feat-btn--yellow:hover * {{
+                color: #ffffff !important;
+            }}
+            a.feat-btn.feat-btn--agent,
+            a.feat-btn.feat-btn--agent:visited,
+            a.feat-btn.feat-btn--agent:hover,
+            a.feat-btn.feat-btn--agent *,
+            a.feat-btn.feat-btn--agent:visited *,
+            a.feat-btn.feat-btn--agent:hover * {{
                 color: #ffffff !important;
             }}
             .card-body {{
@@ -4009,9 +4064,11 @@ def _pie() -> None:
 
 
 def _explora_funcionalidades_html() -> str:
-    """Una sola tarjeta blanca con grid 3 columnas; botones enlace ?nav= (misma altura)."""
+    """Una sola tarjeta blanca con grid 4 columnas; botones enlace ?nav= (misma altura)."""
     F = _FEAT
-    q_res, q_faq, q_qa = quote("Resumen"), quote("FAQ"), quote("Q&A")
+    q_res, q_faq, q_qa, q_agent = (
+        quote("Resumen"), quote("FAQ"), quote("Q&A"), quote("Agente"),
+    )
     return f"""
 <div class="feat-shell">
     <h3 class="feat-shell-title">Explora nuestras funcionalidades</h3>
@@ -4076,6 +4133,26 @@ def _explora_funcionalidades_html() -> str:
                 </div>
             </div>
         </div>
+        <div class="feat-col">
+            <div class="card feat-card feat-card-triple">
+                <div class="feat-head feat-head-agent">
+                    <div class="feat-head-inner">
+                        {F["icon_agent"]}
+                        <div>
+                            <p class="feat-head-title">Agente</p>
+                            <p class="feat-head-sub">Asistente con RAG + memoria.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="feat-body-white feat-body-grow">
+                    <div class="feat-illo feat-illo-fixed">{F["illo_agent"]}</div>
+                    <p class="feat-desc">Conversa con un asistente que consulta documentos oficiales, datos verificados y recuerda el contexto.</p>
+                </div>
+                <div class="feat-card-footer">
+                    <a class="feat-btn feat-btn--agent" href="?nav={q_agent}" target="_self">Ir al Agente →</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 """
@@ -4124,6 +4201,33 @@ def pagina_inicio() -> None:
 def pagina_resumen() -> None:
     st.markdown(
         '<div id="resumen-page-mount" class="resumen-page-mount" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+    # Fix de contraste para botones secundarios dentro de la página Resumen
+    # (Regenerar resumen + botones de líneas de negocio): texto blanco sobre
+    # fondo verde institucional, en vez del oscuro-sobre-oscuro por defecto.
+    st.markdown(
+        f"""
+        <style>
+        [data-testid="stAppViewContainer"]:has(#resumen-page-mount) .stButton > button[kind="secondary"] {{
+            background: linear-gradient(135deg, {C_GREEN} 0%, #2e7d32 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            box-shadow: 0 3px 12px rgba(27, 94, 32, 0.22) !important;
+            font-weight: 600 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#resumen-page-mount) .stButton > button[kind="secondary"] p,
+        [data-testid="stAppViewContainer"]:has(#resumen-page-mount) .stButton > button[kind="secondary"] span,
+        [data-testid="stAppViewContainer"]:has(#resumen-page-mount) .stButton > button[kind="secondary"] * {{
+            color: #ffffff !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#resumen-page-mount) .stButton > button[kind="secondary"]:hover {{
+            background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%) !important;
+            border-color: rgba(255,255,255,0.25) !important;
+            box-shadow: 0 4px 16px rgba(27, 94, 32, 0.32) !important;
+        }}
+        </style>
+        """,
         unsafe_allow_html=True,
     )
     with st.container():
@@ -4348,6 +4452,539 @@ def pagina_qa() -> None:
     _pie()
 
 
+# ============================================================================
+# Página Agente (Módulo 2) — chat con RAG + tools estructuradas + memoria
+# Calcado visualmente de la página Q&A; el motor interno es el agente ReAct.
+# ============================================================================
+
+_TOOL_LABELS = {
+    "rag_search": "Búsqueda semántica (RAG vectorial sobre Supabase pgvector)",
+    "company_info_search": "Consulta determinista a datos estructurados (company_info)",
+}
+
+_TOOL_ICONS = {
+    "rag_search": ":material/manage_search:",
+    "company_info_search": ":material/business:",
+}
+
+
+def _agente_extraer_fuentes(rag_output: str) -> list[dict[str, str]]:
+    """Extrae lista de fuentes del output formateado por rag_search.
+
+    Cabecera de cada bloque (formato actual):
+        [Fuente: X | Sección: Y | Fragmento: N/M | Similitud: 0.NN]
+
+    Formato legado (sin fragmento) también soportado por compatibilidad.
+    """
+    pattern_nuevo = re.compile(
+        r"\[Fuente:\s*(.+?)\s*\|\s*Sección:\s*(.+?)\s*\|\s*"
+        r"Fragmento:\s*(\d+/\d+)\s*\|\s*Similitud:\s*([\d.]+)\]"
+    )
+    pattern_legado = re.compile(
+        r"\[Fuente:\s*(.+?)\s*\|\s*Sección:\s*(.+?)\s*\|\s*Similitud:\s*([\d.]+)\]"
+    )
+
+    fuentes: list[dict[str, str]] = []
+    for m in pattern_nuevo.finditer(rag_output):
+        fuentes.append({
+            "fuente": m.group(1).strip(),
+            "seccion": m.group(2).strip(),
+            "fragmento": m.group(3).strip(),
+            "similitud": m.group(4).strip(),
+        })
+    if fuentes:
+        return fuentes
+
+    for m in pattern_legado.finditer(rag_output):
+        fuentes.append({
+            "fuente": m.group(1).strip(),
+            "seccion": m.group(2).strip(),
+            "fragmento": "",
+            "similitud": m.group(3).strip(),
+        })
+    return fuentes
+
+
+def _agente_render_tool_panel(eventos_tools: list[dict], *, key_suffix: str = "") -> None:
+    """Renderiza el desplegable de fuentes/herramientas usado para un mensaje del bot."""
+    if not eventos_tools:
+        with st.expander("Ver fuentes consultadas", expanded=False):
+            st.caption(
+                "El asistente no consultó documentos para esta respuesta "
+                "(saludo, aclaración conversacional o pregunta fuera de alcance)."
+            )
+        return
+
+    label = f"Ver fuentes consultadas ({len(eventos_tools)})"
+    with st.expander(label, expanded=False):
+        for i, ev in enumerate(eventos_tools, start=1):
+            nombre = ev.get("name", "")
+            args = ev.get("args", {}) or {}
+            resultado = ev.get("result", "") or ""
+            icono = _TOOL_ICONS.get(nombre, ":material/build:")
+            descripcion = _TOOL_LABELS.get(nombre, nombre)
+
+            st.markdown(f"**{i}. {icono} `{nombre}`** — {descripcion}")
+
+            if args:
+                args_pretty = ", ".join(f"`{k}={v!r}`" for k, v in args.items())
+                st.caption(f"Argumentos: {args_pretty}")
+
+            if nombre == "rag_search":
+                fuentes = _agente_extraer_fuentes(resultado)
+                if fuentes:
+                    st.markdown("**Documentos consultados:**")
+                    for f in fuentes:
+                        nombre_doc = f["fuente"]
+                        seccion = f.get("seccion") or "sin sección"
+                        fragmento = f.get("fragmento", "")
+                        sim = f.get("similitud", "")
+                        ubic = f"fragmento {fragmento}" if fragmento else ""
+                        partes = [p for p in [
+                            f"**{nombre_doc}**",
+                            f"sección _{seccion}_",
+                            ubic,
+                            f"similitud `{sim}`",
+                        ] if p]
+                        st.markdown("- " + " · ".join(partes))
+            elif nombre == "company_info_search":
+                categoria = args.get("category", "")
+                if categoria:
+                    st.markdown(
+                        f"**Categoría consultada:** `{categoria}` "
+                        "(tabla `company_info` — datos estructurados verificados)"
+                    )
+                else:
+                    st.caption(
+                        "Consulta general a `company_info` "
+                        "(todas las categorías de datos estructurados)."
+                    )
+
+            if i < len(eventos_tools):
+                st.divider()
+
+
+def _agente_session_id() -> str:
+    """Obtiene o crea un session_id estable para esta sesión de Streamlit."""
+    if "agente_session_id" not in st.session_state:
+        st.session_state.agente_session_id = secrets.token_urlsafe(12)
+    return st.session_state.agente_session_id
+
+
+def _render_agente_quick_topics(*, input_key: str) -> None:
+    """Tarjetas sugeridas. Reusa keys `qa_quick_*` para heredar la CSS de Q&A."""
+    st.markdown(
+        '<p class="qa-quick-lead">También puedes preguntar sobre:</p>',
+        unsafe_allow_html=True,
+    )
+    cols = st.columns(4, gap="medium")
+    for i, (label, pregunta, icon) in enumerate(AGENTE_QUICK_TOPICS):
+        with cols[i]:
+            if st.button(
+                label,
+                key=f"qa_quick_{i}",
+                use_container_width=True,
+                type="secondary",
+                icon=icon,
+            ):
+                st.session_state[input_key] = pregunta
+                st.rerun()
+
+
+def _render_agente_ejemplos_column(*, input_key: str) -> None:
+    """Columna izquierda. Reusa keys `qa_ejemplo_*` para heredar la CSS de Q&A."""
+    st.markdown(
+        '<div class="qa-ejemplos-stack" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<p class="qa-ejemplos-only-heading">Ejemplos de preguntas</p>',
+        unsafe_allow_html=True,
+    )
+    for i, (pregunta, icon) in enumerate(AGENTE_EJEMPLO_PREGUNTAS):
+        if st.button(
+            pregunta,
+            key=f"qa_ejemplo_{i}",
+            use_container_width=True,
+            type="secondary",
+            icon=icon,
+        ):
+            st.session_state[input_key] = pregunta
+            st.rerun()
+
+
+def _ejecutar_consulta_agente(pregunta: str) -> None:
+    """Encola la pregunta del usuario y limpia el input. El streaming real
+    se ejecuta en el siguiente render dentro de `pagina_agente` para poder
+    mostrar `st.status` + `st.write_stream` en vivo dentro del chat."""
+    if not (pregunta and pregunta.strip()):
+        return
+
+    pregunta_limpia = pregunta.strip()
+    # 1. Agregamos la pregunta al historial visible inmediatamente
+    st.session_state.agente_chat_historial.append({
+        "role": "user", "content": pregunta_limpia
+    })
+    # 2. Marcamos como pendiente para procesarla en el siguiente render
+    st.session_state._agente_pending_question = pregunta_limpia
+    # 3. Bandera para limpiar el input en el siguiente render
+    st.session_state._agente_clear_input = True
+    st.rerun()
+
+
+def _procesar_pregunta_pendiente(pregunta: str) -> None:
+    """Ejecuta `ask_streaming` con un spinner visible. Acumula los tokens
+    sin mostrarlos en vivo: la respuesta final aparece dentro de la burbuja
+    del bot del transcript después del rerun (look & feel idéntico al Q&A).
+    """
+    from riopaila_rag.agent import ask_streaming
+
+    session_id = _agente_session_id()
+    eventos_tools: list[dict] = []
+    pending_tool: dict | None = None
+    tokens: list[str] = []
+
+    with st.spinner("Generando respuesta…", show_time=False):
+        try:
+            for event in ask_streaming(pregunta, session_id):
+                kind = event["kind"]
+                if kind == "tool_call":
+                    pending_tool = {
+                        "name": event["name"],
+                        "args": event.get("args", {}),
+                        "result": "",
+                    }
+                elif kind == "tool_result":
+                    if pending_tool and pending_tool["name"] == event["name"]:
+                        pending_tool["result"] = event["content"]
+                        eventos_tools.append(pending_tool)
+                        pending_tool = None
+                elif kind == "token":
+                    tokens.append(event["content"])
+                elif kind == "final":
+                    if event.get("content"):
+                        tokens = [event["content"]]
+            respuesta_final = "".join(tokens).strip() or "(sin respuesta)"
+        except Exception as e:
+            respuesta_final = f"Lo siento, ocurrió un error procesando la respuesta: {e}"
+
+    st.session_state.agente_chat_historial.append({
+        "role": "assistant",
+        "content": respuesta_final,
+        "tools": eventos_tools,
+    })
+    st.session_state.pop("_agente_pending_question", None)
+    st.rerun()
+
+
+def _on_enter_agente() -> None:
+    """Callback disparado cuando el usuario presiona Enter en el campo
+    de pregunta (o quita el foco). Encola la pregunta como pendiente
+    sin invocar `st.rerun()` (Streamlit re-renderiza automáticamente
+    después de ejecutar un callback)."""
+    q = (st.session_state.get("qa_pregunta") or "").strip()
+    if not q:
+        return
+    # Evita disparar dos veces si el usuario hizo Tab tras enviar
+    if st.session_state.get("_agente_pending_question"):
+        return
+    st.session_state.setdefault("agente_chat_historial", []).append({
+        "role": "user", "content": q
+    })
+    st.session_state._agente_pending_question = q
+    st.session_state._agente_clear_input = True
+
+
+def _render_agente_composer() -> None:
+    """Composer del Agente. Reusa las keys `qa_pregunta` y `qa_enviar` para heredar la CSS."""
+    st.markdown(
+        '<div class="qa-composer-surface-anchor" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+    row_left, row_btn = st.columns([3.4, 1.15])
+    with row_left:
+        q = st.text_input(
+            "Tu pregunta",
+            placeholder="Escribe tu pregunta aquí…",
+            label_visibility="collapsed",
+            key="qa_pregunta",
+            on_change=_on_enter_agente,
+        )
+    with row_btn:
+        if st.button(
+            "Enviar",
+            type="primary",
+            key="qa_enviar",
+            use_container_width=True,
+            icon=":material/send:",
+        ):
+            _ejecutar_consulta_agente(q)
+
+
+def _html_agente_chat_transcript(hist: list[dict]) -> str:
+    """Transcript del Agente — reutiliza las burbujas y clases de Q&A."""
+    if not hist:
+        inner = (
+            '<p class="qa-empty-hint">'
+            "Escribe tu pregunta abajo o elige uno de los temas sugeridos."
+            "</p>"
+        )
+    else:
+        parts: list[str] = []
+        for msg in hist:
+            role = msg.get("role")
+            content = msg.get("content", "")
+            if role == "user":
+                parts.append(_html_qa_user_bubble(content))
+            elif role == "assistant":
+                parts.append(_html_qa_bot_bubble(content))
+        inner = "".join(parts)
+    return (
+        '<div class="qa-chat-transcript-shell">'
+        '<div class="qa-chat-scroll-viewport" role="log" aria-live="polite" aria-relevant="additions">'
+        f"{inner}</div></div>"
+    )
+
+
+def pagina_agente() -> None:
+    """Página Agente (Módulo 2) — calco visual de Q&A con motor RAG + tools + memoria.
+
+    Estrategia visual: la página se identifica con el mismo mount `qa-page-mount`
+    que Q&A para heredar TODA la CSS scopeada (tarjeta unificada, columnas, chat,
+    burbujas, composer). Añade un id adicional `agente-page-mount` por si se
+    quisiera diferenciar en el futuro. Como las páginas no se renderizan a la vez,
+    no hay colisión de keys con Q&A.
+    """
+    st.markdown(
+        '<div id="qa-page-mount" class="qa-page-mount" aria-hidden="true"></div>'
+        '<div id="agente-page-mount" class="agente-page-mount" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+
+    # CSS scopeado: estilo claro y centrado para el st.status y los expanders
+    # del Agente (sobreescribe los estilos heredados con bajo contraste).
+    st.markdown(
+        f"""
+        <style>
+        /* Wrapper del expander: marca el inicio en columna izquierda */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] {{
+            margin-top: 18px !important;
+        }}
+        /* Caja del expander (solo el de fuentes del agente, scopeado por wrapper key).
+           Vive en la columna izquierda — ancho 100% del rail. */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpander"] {{
+            background: {C_WHITE} !important;
+            border: 1.5px solid {C_GREEN_SOFT} !important;
+            border-radius: 14px !important;
+            box-shadow: 0 2px 10px rgba(27, 94, 32, 0.06) !important;
+            margin: 0 !important;
+            width: 100% !important;
+            overflow: hidden !important;
+        }}
+        /* Header del expander */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpander"] summary {{
+            background: linear-gradient(135deg, {C_GREEN_SOFT} 0%, #ffffff 100%) !important;
+            color: {C_GREEN} !important;
+            font-weight: 700 !important;
+            padding: 12px 18px !important;
+            list-style: none !important;
+            border-top-left-radius: 14px !important;
+            border-top-right-radius: 14px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpander"] summary * {{
+            color: {C_GREEN} !important;
+            fill: {C_GREEN} !important;
+        }}
+        /* CONTENIDO DEL EXPANDER — altura fija compacta con scroll interno.
+           Mantiene el panel pequeño para no sobresalir del recuadro verde. */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"] {{
+            background: {C_WHITE} !important;
+            color: {C_TEXT} !important;
+            padding: 12px 14px 20px 14px !important;
+            height: 240px !important;
+            max-height: 240px !important;
+            overflow-y: scroll !important;
+            overflow-x: hidden !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: {C_GREEN} rgba(27, 94, 32, 0.08) !important;
+            border-bottom-left-radius: 14px !important;
+            border-bottom-right-radius: 14px !important;
+            font-size: 0.85rem !important;
+            display: block !important;
+            box-sizing: border-box !important;
+        }}
+        /* Aire adicional al final del contenido del expander */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"] > *:last-child {{
+            margin-bottom: 12px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"]::-webkit-scrollbar {{
+            width: 10px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"]::-webkit-scrollbar-track {{
+            background: rgba(27, 94, 32, 0.06) !important;
+            border-radius: 0 0 14px 0 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"]::-webkit-scrollbar-thumb {{
+            background: {C_GREEN} !important;
+            border-radius: 8px !important;
+            border: 2px solid {C_WHITE} !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"]::-webkit-scrollbar-thumb:hover {{
+            background: #145214 !important;
+        }}
+        /* Wrap de líneas largas (rutas / URLs) */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpander"] *,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] details[data-testid="stExpander"] * {{
+            overflow-wrap: anywhere !important;
+            word-break: break-word !important;
+        }}
+
+        /* Bloques <code> inline dentro del expander: fondo claro, texto legible */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] code,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) details[data-testid="stExpander"] code {{
+            background: {C_GREEN_SOFT} !important;
+            color: {C_GREEN} !important;
+            padding: 2px 8px !important;
+            border-radius: 6px !important;
+            border: 1px solid rgba(27, 94, 32, 0.12) !important;
+            font-family: ui-monospace, "Cascadia Code", "Consolas", monospace !important;
+            font-size: 0.85em !important;
+            font-weight: 500 !important;
+        }}
+
+        /* Texto general dentro del expander: legible sobre fondo blanco */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] p,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] li,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] span:not(code):not(.material-symbols-outlined),
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] div:not([data-testid]),
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) details[data-testid="stExpander"] p,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) details[data-testid="stExpander"] li,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) details[data-testid="stExpander"] span:not(code):not(.material-symbols-outlined) {{
+            color: {C_TEXT} !important;
+        }}
+
+        /* Negritas en verde institucional para destacar nombres */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] strong,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) details[data-testid="stExpander"] strong {{
+            color: {C_GREEN} !important;
+            font-weight: 700 !important;
+        }}
+
+        /* Captions (st.caption) */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] [data-testid="stCaptionContainer"],
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] [data-testid="stCaptionContainer"] * {{
+            color: {C_TEXT_MUTED} !important;
+        }}
+
+        /* Iconos Material Symbols dentro del expander */
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] .material-symbols-outlined {{
+            color: {C_GREEN} !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if st.session_state.pop("_agente_pending_chat_clear", False):
+        from riopaila_rag.agent import clear_session
+        clear_session(_agente_session_id())
+        st.session_state.agente_chat_historial = []
+        st.session_state.qa_pregunta = ""
+        st.session_state.pop("_agente_pending_question", None)
+        st.session_state.agente_session_id = secrets.token_urlsafe(12)
+
+    # Bandera levantada por _ejecutar_consulta_agente para vaciar el campo
+    # (Streamlit no permite modificar el valor de un widget ya renderizado;
+    # debemos hacerlo ANTES de que el widget se cree)
+    if st.session_state.pop("_agente_clear_input", False):
+        st.session_state.qa_pregunta = ""
+
+    if "agente_chat_historial" not in st.session_state:
+        st.session_state.agente_chat_historial = []
+
+    # ── Hero carrusel (idéntico al de Q&A) ──────────────────────────────────
+    with st.container():
+        _render_hero_unificado(
+            _collect_hero_images(),
+            hero_layout="faq_banner",
+            show_cap=False,
+            title_txt="Agente — RAG + Tools",
+            sub="Asistente con búsqueda semántica, datos estructurados y memoria persistente.",
+            title_color=C_GREEN,
+            show_title_emoji=False,
+        )
+
+    st.markdown(
+        '<div class="qa-after-hero-spacer" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+
+    # ── Tarjeta unificada — usa las mismas keys (qa_unified_card / qa_chat_inset)
+    #    que Q&A para que TODA la CSS scopeada aplique tal cual.
+    with st.container(border=False, key="qa_unified_card", gap=None):
+        st.markdown(
+            '<div class="qa-unified-card-root" aria-hidden="true"></div>',
+            unsafe_allow_html=True,
+        )
+        _render_qa_header_bar()
+        with st.container(border=False, key="qa_chat_inset", gap="medium"):
+            st.markdown(
+                '<div class="qa-chat-gray-root" aria-hidden="true"></div>',
+                unsafe_allow_html=True,
+            )
+            hist = st.session_state.agente_chat_historial
+            pending = st.session_state.get("_agente_pending_question")
+
+            rail_col, chat_col = st.columns([1, 2.05], gap="medium")
+            with rail_col:
+                _render_agente_ejemplos_column(input_key="qa_pregunta")
+
+                # ── Panel de fuentes del último mensaje del bot ─────────────
+                # Vive en la columna izquierda, debajo de los ejemplos.
+                # Aprovecha el espacio vacío del rail y queda siempre visible
+                # sin tapar el composer ni el chat.
+                if not pending:
+                    ultimo_asistente = next(
+                        (m for m in reversed(hist) if m.get("role") == "assistant"),
+                        None,
+                    )
+                    if ultimo_asistente is not None and "tools" in ultimo_asistente:
+                        with st.container(key="agente_fuentes_wrapper"):
+                            _agente_render_tool_panel(ultimo_asistente.get("tools") or [])
+
+            with chat_col:
+                st.markdown(
+                    '<div class="qa-chat-stream-root" aria-hidden="true"></div>',
+                    unsafe_allow_html=True,
+                )
+                inner_col = st.columns([1])[0]
+                with inner_col:
+                    st.markdown(
+                        _html_agente_chat_transcript(hist),
+                        unsafe_allow_html=True,
+                    )
+
+                    # Si hay pregunta pendiente, ejecutar el streaming AQUÍ
+                    if pending:
+                        _procesar_pregunta_pendiente(pending)
+                        # _procesar_pregunta_pendiente termina con st.rerun(),
+                        # así que el código de abajo no se ejecuta en este render
+
+                    _render_agente_quick_topics(input_key="qa_pregunta")
+
+                    _render_agente_composer()
+
+                    if st.button("Limpiar conversación", key="qa_limpiar", type="secondary"):
+                        st.session_state["_agente_pending_chat_clear"] = True
+                        st.rerun()
+
+    st.markdown(
+        '<div class="qa-m1-below-spacer" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+    _pie()
+
+
 def main() -> None:
     st.set_page_config(
         page_title="Riopaila Castillo — Asistente",
@@ -4370,6 +5007,8 @@ def main() -> None:
         pagina_faq()
     elif p == "Q&A":
         pagina_qa()
+    elif p == "Agente":
+        pagina_agente()
     else:
         st.session_state.pagina = "Inicio"
         pagina_inicio()

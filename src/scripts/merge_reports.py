@@ -5,7 +5,7 @@ Salida  : data/knowledge/riopaila_castilla.md
 """
 from pathlib import Path
 
-ROOT = Path(__file__).parent.parent
+ROOT = Path(__file__).parent.parent.parent
 REPORTS_DIR = ROOT / "reports"
 OUTPUT_FILE = ROOT / "data" / "knowledge" / "riopaila_castilla.md"
 
@@ -20,16 +20,16 @@ ARCHIVOS_INSUMO = [
 def consolidar_contexto():
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as salida:
-        salida.write("# Base de Conocimiento — Riopaila Castilla\n\n")
+        salida.write("# Base de Conocimiento -- Riopaila Castilla\n\n")
         for nombre in ARCHIVOS_INSUMO:
             ruta = REPORTS_DIR / nombre
             if ruta.exists():
-                salida.write(f"---\n\n")
+                salida.write("---\n\n")
                 salida.write(ruta.read_text(encoding="utf-8"))
                 salida.write("\n")
                 print(f"Agregado: {nombre}")
             else:
-                print(f"Advertencia: No se encontró {ruta}")
+                print(f"Advertencia: No se encontro {ruta}")
 
     print(f"\nArchivo consolidado generado: {OUTPUT_FILE}")
 

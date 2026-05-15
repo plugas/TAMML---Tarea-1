@@ -11,9 +11,6 @@ __pycache__/
 dist/
 build/
 
-# uv lock
-# uv.lock se puede incluir para reproducibilidad; descomenta si no lo quieres versionar
-# uv.lock
 
 # Sistemas operativos
 .DS_Store
@@ -25,3 +22,5 @@ Thumbs.db
 
 .claude
 docs
+
+src/riopaila_rag/config.py
