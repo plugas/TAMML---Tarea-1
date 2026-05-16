@@ -119,12 +119,19 @@ def ingest(force: bool = False) -> None:
             print("Cancelado.")
             return
 
-    # 3. Limpiar tabla
+    # 3. Limpiar tabla (en lotes para evitar timeout de Supabase con tablas grandes)
     print("\nLimpiando tabla documents...")
-    supabase.table("documents").delete().neq(
-        "id", "00000000-0000-0000-0000-000000000000"
-    ).execute()
-    print("  OK tabla limpia")
+    total_borrados = 0
+    while True:
+        # Trae 500 ids, los borra, repite hasta que no haya más
+        batch = supabase.table("documents").select("id").limit(500).execute()
+        if not batch.data:
+            break
+        ids = [row["id"] for row in batch.data]
+        supabase.table("documents").delete().in_("id", ids).execute()
+        total_borrados += len(ids)
+        print(f"  Borrados {total_borrados} chunks…", flush=True)
+    print(f"  OK tabla limpia ({total_borrados} filas eliminadas)")
 
     # 4. Chunking
     print(f"\nGenerando chunks (chunk_size={CHUNK_SIZE})...")
@@ -144,7 +151,17 @@ def ingest(force: bool = False) -> None:
     for i in range(0, len(all_chunks), BATCH_SIZE):
         batch_chunks = all_chunks[i : i + BATCH_SIZE]
         batch_num = i // BATCH_SIZE + 1
-        texts = [c.content for c in batch_chunks]
+        # Enriquecemos el texto a embedder con metadata de contexto
+        # (documento + sección) para que el embedding capture mejor de qué
+        # trata el chunk. Crítico para chunks tabulares con poca prosa.
+        # El campo `content` que se guarda en BD permanece igual; solo el
+        # texto que va al modelo de embeddings se enriquece.
+        texts = [
+            f"Documento: {c.metadata.get('fuente', 'desconocido')}\n"
+            f"Sección: {c.metadata.get('seccion', 'sin sección')}\n\n"
+            f"{c.content}"
+            for c in batch_chunks
+        ]
 
         print(
             f"  Batch {batch_num}/{total_batches} "

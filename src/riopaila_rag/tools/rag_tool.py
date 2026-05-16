@@ -40,7 +40,13 @@ def rag_search(query: str) -> str:
 
     Usa esta herramienta para responder preguntas sobre historia, operaciones,
     sostenibilidad, productos, certificaciones, informes financieros, estrategia
-    corporativa o cualquier tema general de la empresa.
+    corporativa, gobierno corporativo o cualquier tema general de la empresa.
+
+    Para integrantes de la **Junta Directiva** (principales y suplentes), formula
+    la consulta de forma explícita: incluye términos como "Junta Directiva",
+    "integrantes", "principales", "suplentes", "2026", "2027", "nombramiento",
+    porque otros documentos mencionan la JD en genérico y pueden ganar similitud
+    si la consulta es demasiado vaga.
 
     Args:
         query: Pregunta o tema a buscar en la base de conocimiento.

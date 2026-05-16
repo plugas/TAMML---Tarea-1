@@ -808,7 +808,9 @@ def inyectar_estilos_globales() -> None:
             }}
             .feat-head-agent .feat-head-title {{ color: {C_GREEN}; }}
             .feat-head-agent .feat-head-sub {{ color: {C_ORANGE_SUB}; }}
-            .feat-head-agent .feat-head-material {{ color: {C_GREEN}; }}
+            .feat-head-agent .feat-head-material {{
+                color: {C_ORANGE} !important;
+            }}
 
             .feat-body-white {{
                 background: {C_WHITE};
@@ -1691,18 +1693,27 @@ def inyectar_estilos_globales() -> None:
                 overflow-y: visible !important;
                 overflow-x: hidden !important;
             }}
-            /* Lista Módulo 1: compacta, alineada a la izquierda, sin bloques “pesados” */
+            /* Lista Módulo 1: todo verde claro (sin superficies oscuras del tema Streamlit) */
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] {{
-                border: 1px solid rgba(27, 94, 32, 0.14) !important;
+                border: 1px solid rgba(27, 94, 32, 0.22) !important;
                 border-radius: 12px !important;
-                background: linear-gradient(180deg, #fafcfb 0%, #f3f7f4 100%) !important;
-                box-shadow: 0 1px 3px rgba(0, 50, 30, 0.06) !important;
+                background: linear-gradient(180deg, #f4faf4 0%, {C_GREEN_SOFT} 100%) !important;
+                box-shadow: 0 1px 3px rgba(27, 94, 32, 0.08) !important;
+                color-scheme: light !important;
+                --widget-background-color: {C_GREEN_SOFT} !important;
+                --secondary-background-color: {C_GREEN_SOFT} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] details[data-testid="stExpander"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpanderDetails"] {{
+                background: #f1f8f4 !important;
+                color: {C_TEXT} !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] summary {{
                 padding: 12px 14px !important;
                 font-weight: 700 !important;
                 font-size: 0.92rem !important;
                 color: {C_GREEN} !important;
+                background: transparent !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"]:has(.stButton) {{
                 margin-bottom: 5px !important;
@@ -1713,7 +1724,10 @@ def inyectar_estilos_globales() -> None:
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton {{
                 width: 100% !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] {{
+            /* Botones lista Módulo 1: compatibilidad tema oscuro Streamlit (sin kind en DOM / variables tema) */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button {{
                 width: 100% !important;
                 min-height: 0 !important;
                 height: auto !important;
@@ -1722,8 +1736,9 @@ def inyectar_estilos_globales() -> None:
                 align-items: flex-start !important;
                 text-align: left !important;
                 border-radius: 8px !important;
-                border: 1px solid rgba(27, 94, 32, 0.1) !important;
-                background: #ffffff !important;
+                border: 1px solid rgba(27, 94, 32, 0.35) !important;
+                background: {C_GREEN_SOFT} !important;
+                background-color: {C_GREEN_SOFT} !important;
                 box-shadow: none !important;
                 font-weight: 500 !important;
                 font-size: 0.8125rem !important;
@@ -1731,25 +1746,50 @@ def inyectar_estilos_globales() -> None:
                 white-space: normal !important;
                 word-break: break-word !important;
                 color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
                 transition: background 0.15s ease, border-color 0.15s ease !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] p {{
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"] p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button p {{
                 text-align: left !important;
                 margin: 0 !important;
                 width: 100% !important;
                 white-space: normal !important;
                 word-break: break-word !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"]:hover {{
-                background: #eef6ef !important;
-                border-color: rgba(27, 94, 32, 0.28) !important;
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"] span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button [data-testid="stMarkdownContainer"] * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"]:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"]:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button:hover {{
+                background: #c8e6c9 !important;
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.45) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] .stCaption {{
                 font-size: 0.78rem !important;
                 line-height: 1.45 !important;
-                color: {C_TEXT_MUTED} !important;
+                color: #37474f !important;
+                -webkit-text-fill-color: #37474f !important;
                 margin-bottom: 10px !important;
                 padding: 0 2px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] .stCaption *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] [data-testid="stCaptionContainer"] *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] [data-testid="stMarkdownContainer"] p {{
+                color: #37474f !important;
+                -webkit-text-fill-color: #37474f !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-m1-below-spacer {{
                 display: block !important;
@@ -1827,7 +1867,7 @@ def inyectar_estilos_globales() -> None:
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bubble--bot {{
                 flex: 0 1 auto !important;
                 min-width: 0 !important;
-                max-width: min(100%, 600px) !important;
+                max-width: min(100%, 680px) !important;
                 background: {C_WHITE} !important;
                 border: 1px solid #e0e0e0 !important;
                 border-radius: 16px 16px 16px 6px !important;
@@ -1904,6 +1944,29 @@ def inyectar_estilos_globales() -> None:
                 color: #1565c0 !important;
                 text-decoration: underline !important;
                 text-underline-offset: 2px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bot-body.qa-chat-bot-md .qa-md-sources-hdr {{
+                margin-top: 1rem !important;
+                padding-top: 0.7rem !important;
+                border-top: 1px solid rgba(27, 94, 32, 0.22) !important;
+                font-size: 0.68rem !important;
+                font-weight: 800 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+                color: {C_GREEN} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bot-body.qa-chat-bot-md .qa-md-sources-hdr + ul {{
+                margin-top: 0.35em !important;
+                padding-left: 1.15rem !important;
+                border-radius: 10px !important;
+                background: rgba(27, 94, 32, 0.04) !important;
+                padding: 0.5rem 0.85rem 0.55rem 1.35rem !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bot-body.qa-chat-bot-md .qa-md-sources-hdr + ul li {{
+                margin: 0.28em 0 !important;
+                font-size: 0.875rem !important;
+                color: #455a64 !important;
+                line-height: 1.45 !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-avatar--bot {{
                 width: 40px;
@@ -1983,23 +2046,133 @@ def inyectar_estilos_globales() -> None:
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] {{
                 display: flex !important;
-                justify-content: flex-start !important;
-                align-items: center !important;
+                flex: 1 1 auto !important;
+                justify-content: center !important;
+                align-items: stretch !important;
+                align-self: stretch !important;
                 flex-shrink: 0 !important;
-                margin-top: 8px !important;
-                margin-bottom: 12px !important;
-                padding-bottom: 0 !important;
-                padding-left: 2px !important;
+                margin-top: 6px !important;
+                margin-bottom: 10px !important;
+                padding: 0 !important;
+                width: 100% !important;
+                min-height: 48px !important;
             }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] {{
+                display: flex !important;
+                flex: 1 1 auto !important;
+                justify-content: center !important;
+                align-items: stretch !important;
+                align-self: stretch !important;
+                flex-shrink: 0 !important;
+                margin-top: 6px !important;
+                margin-bottom: 10px !important;
+                padding: 0 !important;
+                width: 100% !important;
+                min-height: 48px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] {{
+                width: 100% !important;
+                display: flex !important;
+                align-items: stretch !important;
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] {{
                 background: {C_WHITE} !important;
                 border: 1px solid #cfd8dc !important;
+                border-radius: 10px !important;
+                box-sizing: border-box !important;
                 color: #455a64 !important;
+                width: 100% !important;
+                min-height: 48px !important;
+                height: 100% !important;
+                max-height: none !important;
+                flex: 1 1 auto !important;
+                align-self: stretch !important;
+                padding: 8px 14px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.45rem !important;
+                line-height: 1.15 !important;
+                white-space: normal !important;
             }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button [data-testid="stMarkdownContainer"],
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] p,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] span,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] * {{
                 color: #455a64 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] [data-testid="stMarkdownContainer"] {{
+                margin: 0 !important;
+                line-height: 1.15 !important;
+                text-align: center !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] svg,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] svg *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] path,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton svg,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton svg *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton path,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] svg,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] svg *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] path {{
+                color: #455a64 !important;
+                stroke: #455a64 !important;
+                fill: #455a64 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"]:hover {{
+                background: #f1f8f4 !important;
+                border-color: {C_GREEN} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton {{
+                width: 100% !important;
+                display: flex !important;
+                align-items: stretch !important;
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) {{
+                align-items: stretch !important;
+                gap: 10px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) > div[data-testid="stColumn"] {{
+                display: flex !important;
+                align-items: stretch !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] {{
+                flex: 1 1 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                width: 100% !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] {{
+                flex: 1 1 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                width: 100% !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton {{
+                width: 100% !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) div[data-testid="stColumn"]:has(.qa-composer-surface-anchor) [data-testid="stHorizontalBlock"]:has([data-testid="stTextInput"]) {{
                 align-items: center !important;
@@ -3015,6 +3188,128 @@ def inyectar_estilos_globales() -> None:
                 color: {C_TEXT_MUTED} !important;
                 margin-top: 1.25rem !important;
             }}
+
+            /*
+             * Lista “20 preguntas · Módulo 1”: verde claro fijo + variables tema (último bloque CSS).
+             */
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root),
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) {{
+                color-scheme: light !important;
+                background: linear-gradient(180deg, #f4faf4 0%, {C_GREEN_SOFT} 100%) !important;
+                border-radius: 12px !important;
+                --widget-background-color: {C_GREEN_SOFT} !important;
+                --secondary-background-color: {C_GREEN_SOFT} !important;
+                --text-color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) summary,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) summary {{
+                color: {C_GREEN} !important;
+                background: transparent !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) [data-testid="stExpanderDetails"],
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) > div:last-child {{
+                background: #f1f8f4 !important;
+                color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stCaption,
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) [data-testid="stCaptionContainer"],
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) [data-testid="stCaptionContainer"] *,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stCaption {{
+                color: #37474f !important;
+                -webkit-text-fill-color: #37474f !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton {{
+                width: 100% !important;
+                background: transparent !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button {{
+                width: 100% !important;
+                justify-content: flex-start !important;
+                align-items: flex-start !important;
+                text-align: left !important;
+                padding: 9px 12px 9px 14px !important;
+                min-height: 0 !important;
+                height: auto !important;
+                border-radius: 8px !important;
+                border: 1px solid rgba(27, 94, 32, 0.38) !important;
+                box-shadow: none !important;
+                background-color: {C_GREEN_SOFT} !important;
+                background-image: none !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                font-weight: 500 !important;
+                font-size: 0.8125rem !important;
+                line-height: 1.42 !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button:hover,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button:hover {{
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.5) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button p,
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button span,
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button [data-testid="stMarkdownContainer"],
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button [data-testid="stMarkdownContainer"] *,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button p {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                background: transparent !important;
+                background-color: transparent !important;
+            }}
+
+            /* Respaldo: cada pregunta usa key=m1_prueba_N → clase st-key-m1_prueba_* (no depende de :has). */
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] .stButton > button,
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] button {{
+                background-color: {C_GREEN_SOFT} !important;
+                background-image: none !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                border: 1px solid rgba(27, 94, 32, 0.38) !important;
+                box-shadow: none !important;
+            }}
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] .stButton > button:hover,
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] button:hover {{
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.5) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] .stButton > button *,
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] button * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                background-color: transparent !important;
+                background-image: none !important;
+            }}
+            /* Mismo estilo sin depender de stMain (por si el árbol DOM cambia). */
+            [class*="st-key-m1_prueba_"] .stButton > button,
+            [class*="st-key-m1_prueba_"] .stButton > button[kind="secondary"],
+            [class*="st-key-m1_prueba_"] button[data-testid="baseButton-secondary"] {{
+                background-color: {C_GREEN_SOFT} !important;
+                background-image: none !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                border: 1px solid rgba(27, 94, 32, 0.38) !important;
+                box-shadow: none !important;
+            }}
+            [class*="st-key-m1_prueba_"] .stButton > button:hover {{
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.5) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [class*="st-key-m1_prueba_"] .stButton > button *,
+            [class*="st-key-m1_prueba_"] button * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                background-color: transparent !important;
+            }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -3170,6 +3465,13 @@ def _respuesta_asistente_md_a_html_fragment(text: str) -> str:
         out = md_it.render(raw).strip()
         out = re.sub(r'href\s*=\s*"\s*javascript:[^"]*"', 'href="#"', out, flags=re.I)
         out = re.sub(r"href\s*=\s*'\s*javascript:[^']*'", "href='#'", out, flags=re.I)
+        # Título "Fuentes" típico del agente: párrafo+strong → bloque con estilo propio
+        out = re.sub(
+            r"<p>\s*<strong>\s*Fuentes\s*</strong>\s*</p>",
+            '<div class="qa-md-sources-hdr" role="heading" aria-level="3">Fuentes</div>',
+            out,
+            flags=re.I,
+        )
         return out
     except Exception:
         return html.escape(text).replace("\n", "<br/>")
@@ -3897,6 +4199,12 @@ def _render_modulo1_veinte_pruebas_below_card() -> None:
             "20 preguntas · pruebas informe (Módulo 1)",
             expanded=False,
         ):
+            # Ancla CSS: permite forzar contraste alto aunque el tema Streamlit sea oscuro
+            # (los estilos van al final de `inyectar_estilos_globales`).
+            st.markdown(
+                '<div class="qa-m1-twenty-tests-root" aria-hidden="true" style="display:none"></div>',
+                unsafe_allow_html=True,
+            )
             st.caption(
                 "Pulsa una fila: se cargará en **Tu pregunta** (recuadro en la tarjeta de arriba). Luego **Enviar**. "
                 "Usa la lista para documentar el informe."
@@ -4761,6 +5069,35 @@ def pagina_agente() -> None:
         unsafe_allow_html=True,
     )
 
+    try:
+        from riopaila_rag.config import check_openai, check_supabase
+
+        check_openai()
+        check_supabase()
+    except EnvironmentError as err:
+        st.error(str(err))
+        msg_u = str(err).upper()
+        if "SUPABASE" in msg_u:
+            st.info(
+                "Este proyecto usa `supabase-py` 2.3.x: en **SUPABASE_KEY** debe ir la clave JWT "
+                "**anon** (suele empezar por `eyJ`), no la clave `sb_publishable_`. "
+                "En Supabase: **Project Settings → API Keys** → pestaña **Legacy anon / "
+                "service_role** → copia **anon** y pégala en `.env`. "
+                "**Project URL** sigue igual en **SUPABASE_URL**. "
+                "Luego ejecuta los SQL `supabase/migrations/001_init.sql` y "
+                "`supabase/seeds/company_info.sql` si aún no lo hiciste, reinicia Streamlit y "
+                "`uv run python -m riopaila_rag.ingest` si falta vectorizar."
+            )
+        elif "OPENAI" in msg_u:
+            st.info(
+                "Añade `OPENAI_API_KEY` en el `.env` de la raíz del proyecto "
+                "(obtén una clave en [platform.openai.com](https://platform.openai.com/api-keys)) "
+                "y reinicia Streamlit."
+            )
+        else:
+            st.info("Revisa las variables del archivo `.env` en la raíz del proyecto y reinicia la app.")
+        return
+
     # CSS scopeado: estilo claro y centrado para el st.status y los expanders
     # del Agente (sobreescribe los estilos heredados con bajo contraste).
     st.markdown(
@@ -4974,9 +5311,43 @@ def pagina_agente() -> None:
 
                     _render_agente_composer()
 
-                    if st.button("Limpiar conversación", key="qa_limpiar", type="secondary"):
-                        st.session_state["_agente_pending_chat_clear"] = True
-                        st.rerun()
+                    pdf_bytes: bytes | None = None
+                    if hist:
+                        try:
+                            from riopaila_rag.agent_chat_pdf import (
+                                build_agent_chat_pdf_bytes,
+                            )
+
+                            pdf_bytes = build_agent_chat_pdf_bytes(hist)
+                        except Exception as exc:
+                            st.warning(f"No se pudo generar el PDF: {exc}")
+
+                    col_pdf, col_clr = st.columns(2, gap="medium")
+                    with col_pdf:
+                        if pdf_bytes is not None:
+                            st.download_button(
+                                "Descargar conversación (PDF)",
+                                data=pdf_bytes,
+                                file_name=(
+                                    "riopaila_agente_"
+                                    f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+                                ),
+                                mime="application/pdf",
+                                use_container_width=True,
+                                type="secondary",
+                                icon=":material/picture_as_pdf:",
+                                key="qa_export_pdf",
+                            )
+                    with col_clr:
+                        if st.button(
+                            "Limpiar conversación",
+                            key="qa_limpiar",
+                            type="secondary",
+                            use_container_width=True,
+                            icon=":material/delete_sweep:",
+                        ):
+                            st.session_state["_agente_pending_chat_clear"] = True
+                            st.rerun()
 
     st.markdown(
         '<div class="qa-m1-below-spacer" aria-hidden="true"></div>',
