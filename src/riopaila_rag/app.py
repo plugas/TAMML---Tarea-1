@@ -1366,7 +1366,7 @@ def inyectar_estilos_globales() -> None:
                 overflow-y: hidden !important;
                 display: flex !important;
                 flex-direction: column !important;
-                min-height: max(min(58vh, 560px), calc(100svh - 500px)) !important;
+                min-height: max(min(58vh, 590px), calc(100svh - 470px)) !important;
                 max-height: min(calc(100svh - 200px), 1080px) !important;
             }}
             html:has(#qa-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type,
@@ -1982,14 +1982,8 @@ def inyectar_estilos_globales() -> None:
                 border-color: {C_GREEN} !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] {{
-                display: flex !important;
-                justify-content: flex-start !important;
-                align-items: center !important;
                 flex-shrink: 0 !important;
-                margin-top: 8px !important;
-                margin-bottom: 12px !important;
                 padding-bottom: 0 !important;
-                padding-left: 2px !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] {{
                 background: {C_WHITE} !important;
@@ -1999,6 +1993,27 @@ def inyectar_estilos_globales() -> None:
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] p,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] span,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] * {{
+                color: #455a64 !important;
+            }}
+            /* Fila de botones limpiar + PDF: centrado y alineación vertical */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf_off"] {{
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin-top: 8px !important;
+                margin-bottom: 12px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button {{
+                background: {C_WHITE} !important;
+                border: 1px solid #cfd8dc !important;
+                color: #455a64 !important;
+                width: 100% !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button * {{
                 color: #455a64 !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) div[data-testid="stColumn"]:has(.qa-composer-surface-anchor) [data-testid="stHorizontalBlock"]:has([data-testid="stTextInput"]) {{
@@ -4800,18 +4815,20 @@ def pagina_agente() -> None:
         [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"] {{
             background: {C_WHITE} !important;
             color: {C_TEXT} !important;
-            padding: 12px 14px 20px 14px !important;
-            height: 240px !important;
-            max-height: 240px !important;
-            overflow-y: scroll !important;
+            padding: 12px 14px 12px 14px !important;
+            height: 120px !important;
+            max-height: 120px !important;
+            min-height: 0 !important;
+            overflow-y: auto !important;
             overflow-x: hidden !important;
             scrollbar-width: thin !important;
             scrollbar-color: {C_GREEN} rgba(27, 94, 32, 0.08) !important;
             border-bottom-left-radius: 14px !important;
             border-bottom-right-radius: 14px !important;
-            font-size: 0.85rem !important;
+            font-size: 0.82rem !important;
             display: block !important;
             box-sizing: border-box !important;
+            contain: strict !important;
         }}
         /* Aire adicional al final del contenido del expander */
         [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"] > *:last-child {{
@@ -4940,9 +4957,6 @@ def pagina_agente() -> None:
                 _render_agente_ejemplos_column(input_key="qa_pregunta")
 
                 # ── Panel de fuentes del último mensaje del bot ─────────────
-                # Vive en la columna izquierda, debajo de los ejemplos.
-                # Aprovecha el espacio vacío del rail y queda siempre visible
-                # sin tapar el composer ni el chat.
                 if not pending:
                     ultimo_asistente = next(
                         (m for m in reversed(hist) if m.get("role") == "assistant"),
@@ -4951,6 +4965,7 @@ def pagina_agente() -> None:
                     if ultimo_asistente is not None and "tools" in ultimo_asistente:
                         with st.container(key="agente_fuentes_wrapper"):
                             _agente_render_tool_panel(ultimo_asistente.get("tools") or [])
+
 
             with chat_col:
                 st.markdown(
@@ -4974,9 +4989,29 @@ def pagina_agente() -> None:
 
                     _render_agente_composer()
 
-                    if st.button("Limpiar conversación", key="qa_limpiar", type="secondary"):
-                        st.session_state["_agente_pending_chat_clear"] = True
-                        st.rerun()
+                    try:
+                        from riopaila_rag.agent_chat_pdf import build_agent_chat_pdf_bytes
+                        pdf_bytes = build_agent_chat_pdf_bytes(hist) if hist else None
+                    except Exception:
+                        pdf_bytes = None
+
+                    btn_col1, btn_col2 = st.columns([1, 1], gap="small")
+                    with btn_col1:
+                        if st.button("Limpiar conversación", key="qa_limpiar", type="secondary", use_container_width=True):
+                            st.session_state["_agente_pending_chat_clear"] = True
+                            st.rerun()
+                    with btn_col2:
+                        if pdf_bytes:
+                            st.download_button(
+                                label="Descargar PDF",
+                                data=pdf_bytes,
+                                file_name="conversacion_riopaila.pdf",
+                                mime="application/pdf",
+                                key="agente_download_pdf",
+                                use_container_width=True,
+                            )
+                        else:
+                            st.button("Descargar PDF", key="agente_download_pdf_off", disabled=True, use_container_width=True)
 
     st.markdown(
         '<div class="qa-m1-below-spacer" aria-hidden="true"></div>',
