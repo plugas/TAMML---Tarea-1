@@ -18,6 +18,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 from riopaila_rag.config import CHUNK_SIZE
 
 
@@ -37,49 +39,13 @@ def _overlap_size(chunk_size: int) -> int:
 
 
 def _split_by_sentences(text: str, chunk_size: int) -> list[str]:
-    """
-    Divide texto largo en fragmentos respetando oraciones.
-    Aplica overlap del 20% para no perder contexto en los bordes.
-    """
+    """Divide texto largo con RecursiveCharacterTextSplitter (requisito Módulo 3)."""
     overlap = _overlap_size(chunk_size)
-    # Separar por punto, signo de exclamacion o interrogacion seguido de espacio/newline
-    sentences = re.split(r'(?<=[.!?])\s+', text.strip())
-
-    chunks: list[str] = []
-    current: list[str] = []
-    current_len = 0
-
-    for sentence in sentences:
-        sentence = sentence.strip()
-        if not sentence:
-            continue
-
-        if current_len + len(sentence) + 1 > chunk_size and current:
-            chunk_text = " ".join(current).strip()
-            if chunk_text:
-                chunks.append(chunk_text)
-
-            # Overlap: mantener ultimas oraciones que quepan en `overlap` chars
-            overlap_sentences: list[str] = []
-            overlap_len = 0
-            for s in reversed(current):
-                if overlap_len + len(s) + 1 <= overlap:
-                    overlap_sentences.insert(0, s)
-                    overlap_len += len(s) + 1
-                else:
-                    break
-            current = overlap_sentences
-            current_len = overlap_len
-
-        current.append(sentence)
-        current_len += len(sentence) + 1
-
-    if current:
-        chunk_text = " ".join(current).strip()
-        if chunk_text:
-            chunks.append(chunk_text)
-
-    return chunks
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=overlap,
+    )
+    return splitter.split_text(text)
 
 
 def _split_by_paragraphs(text: str, chunk_size: int) -> list[str]:

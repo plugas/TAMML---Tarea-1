@@ -21,6 +21,9 @@ Thumbs.db
 .idea/
 
 .claude
-docs
 
-src/riopaila_rag/config.py
+# Secretos locales (nunca subir)
+.streamlit/secrets.toml
+
+# Artefactos generados localmente (el MD fuente sí va al repo)
+docs/INFORME_TECNICO_MODULO3.pdf

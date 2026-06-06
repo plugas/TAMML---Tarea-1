@@ -464,3 +464,19 @@ supabase/
 
 - Python 3.14 requiere fijar `supabase==2.3.8`, `gotrue>=2.4,<2.5` y `httpx>=0.24,<0.26` (algunas versiones más nuevas dependen de `onnxruntime==1.20.1` que no tiene wheels para `cp314`).
 - Row Level Security debe estar desactivado en las 3 tablas para que la `anon key` pueda leer/escribir en modo dev. Para producción se deben configurar policies adecuadas.
+
+---
+
+## Módulo 3 — Productización (Ruta A)
+
+El agente se expone como **servicio FastAPI** para WhatsApp (N8N o webhook Meta). Streamlit sigue como demo interna.
+
+| Comando | Descripción |
+|---------|-------------|
+| `make api` | API en puerto 8000 (`POST /chat`) |
+| `make verify-m3` | Verifica stack LangChain y `.env` |
+| `make test-api` | Prueba `/health` y `/chat` |
+| `make seed-logs` | Pobla `conversation_logs` (t-SNE) |
+| `make informe-pdf` | Genera informe PDF |
+
+Documentación: **`MODULO3.md`**, checklist `docs/CHECKLIST_ENTREGA_MODULO3.md`, informe `docs/INFORME_TECNICO_MODULO3.md`.

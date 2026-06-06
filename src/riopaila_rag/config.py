@@ -7,7 +7,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+# Raíz del repo (padre de src/). Evita que Streamlit/use otro cwd y no encuentre .env
+_ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_ROOT_DIR / ".env")
 
 
 def _require(key: str) -> str:
@@ -46,10 +48,29 @@ LANGCHAIN_PROJECT: str = _optional("LANGCHAIN_PROJECT", "riopaila-agent-module2"
 CHUNK_SIZE: int = int(_optional("CHUNK_SIZE", "1200"))
 
 # ── Retrieval ─────────────────────────────────────────────────────────────────
-RAG_TOP_K: int = int(_optional("RAG_TOP_K", "5"))
+# Default 12: en corpus grande muchos chunks mencionan "Junta Directiva" sin listar miembros;
+# hace falta ampliar el top-K para que entre el documento dedicado (2026-2027).
+RAG_TOP_K: int = int(_optional("RAG_TOP_K", "12"))
+
+# ── API / canales (Módulo 3) ──────────────────────────────────────────────────
+API_HOST: str = _optional("API_HOST", "0.0.0.0")
+API_PORT: int = int(_optional("API_PORT", "8000"))
+CHAT_CHANNEL: str = _optional("CHAT_CHANNEL", "api")
+
+# ── WhatsApp Cloud API (Meta) — webhook opcional en FastAPI ───────────────────
+WHATSAPP_VERIFY_TOKEN: str = _optional("WHATSAPP_VERIFY_TOKEN")
+WHATSAPP_ACCESS_TOKEN: str = _optional("WHATSAPP_ACCESS_TOKEN")
+WHATSAPP_PHONE_NUMBER_ID: str = _optional("WHATSAPP_PHONE_NUMBER_ID")
+WHATSAPP_API_VERSION: str = _optional("WHATSAPP_API_VERSION", "v21.0")
+# Número visible en la web Streamlit (enlace wa.me, sin + ni espacios)
+WHATSAPP_DEMO_NUMBER: str = _optional("WHATSAPP_DEMO_NUMBER", "15550598036")
+WHATSAPP_DEMO_DISPLAY: str = _optional("WHATSAPP_DEMO_DISPLAY", "+1 (555) 059-8036")
+# Bot de Telegram (opcional): https://t.me/nombre_del_bot
+TELEGRAM_BOT_URL: str = _optional("TELEGRAM_BOT_URL")
+TELEGRAM_BOT_DISPLAY: str = _optional("TELEGRAM_BOT_DISPLAY", "Riopaila Agente")
 
 # ── Rutas ─────────────────────────────────────────────────────────────────────
-ROOT_DIR: Path = Path(__file__).resolve().parent.parent.parent
+ROOT_DIR: Path = _ROOT_DIR
 KNOWLEDGE_FILE: Path = ROOT_DIR / "data" / "knowledge" / "riopaila_castilla_clean.md"
 
 
@@ -70,4 +91,11 @@ def check_supabase() -> None:
         raise EnvironmentError(
             f"Faltan variables de Supabase: {', '.join(missing)}\n"
             "Créalas en supabase.com y agrégalas al .env"
+        )
+    key = os.getenv("SUPABASE_KEY", "").strip()
+    if key.startswith("sb_publishable_") or key.startswith("sb_secret_"):
+        raise EnvironmentError(
+            "SUPABASE_KEY usa una clave nueva (sb_publishable_ / sb_secret_). "
+            "Con supabase-py 2.3.x necesitas la clave JWT anon heredada (empieza por eyJ): "
+            "Dashboard → Project Settings → API Keys → pestaña Legacy anon / service_role → anon."
         )

@@ -1,0 +1,136 @@
+{
+  "name": "Riopaila WhatsApp → Agente FastAPI",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-riopaila",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-meta",
+      "name": "Webhook Meta WhatsApp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "riopaila-wa-in"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = $input.item.json.body ?? $input.item.json;\nlet message = '';\nlet session_id = '';\n\ntry {\n  const entry = (body.entry || [])[0];\n  const change = (entry.changes || [])[0];\n  const value = change.value || {};\n  const msg = (value.messages || [])[0];\n  if (msg && msg.type === 'text') {\n    session_id = msg.from || '';\n    message = (msg.text && msg.text.body) || '';\n  }\n} catch (e) {}\n\nreturn { json: { message, session_id, skip: !message || !session_id } };"
+      },
+      "id": "parse-meta",
+      "name": "Parsear mensaje Meta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.skip }}",
+              "value2": false
+            }
+          ]
+        }
+      },
+      "id": "if-text",
+      "name": "¿Hay texto?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://flatten-drinking-encrypt.ngrok-free.dev/chat",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.message }}\",\n  \"session_id\": \"{{ $json.session_id }}\"\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "http-agent",
+      "name": "POST Agente /chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 280]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/285101171362806/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Parsear mensaje Meta').item.json.session_id }}\",\n  \"type\": \"text\",\n  \"text\": { \"body\": \"{{ $json.reply }}\" }\n}",
+        "options": {}
+      },
+      "id": "send-wa",
+      "name": "Enviar respuesta WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1180, 280]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"ok\" }"
+      },
+      "id": "respond-ok",
+      "name": "Responder 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1420, 280]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"ignored\" }"
+      },
+      "id": "respond-skip",
+      "name": "Responder ignorado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [940, 480]
+    }
+  ],
+  "connections": {
+    "Webhook Meta WhatsApp": {
+      "main": [[{ "node": "Parsear mensaje Meta", "type": "main", "index": 0 }]]
+    },
+    "Parsear mensaje Meta": {
+      "main": [[{ "node": "¿Hay texto?", "type": "main", "index": 0 }]]
+    },
+    "¿Hay texto?": {
+      "main": [
+        [{ "node": "POST Agente /chat", "type": "main", "index": 0 }],
+        [{ "node": "Responder ignorado", "type": "main", "index": 0 }]
+      ]
+    },
+    "POST Agente /chat": {
+      "main": [[{ "node": "Enviar respuesta WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Enviar respuesta WhatsApp": {
+      "main": [[{ "node": "Responder 200", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

@@ -1,25 +1,22 @@
 """
-Tool estructurada: consulta determinista a la tabla `company_info` de Supabase.
-
-Para datos exactos (teléfonos, emails, direcciones, NIT, redes sociales, etc.)
-donde una búsqueda semántica podría dar respuestas incorrectas o desactualizadas.
-El agente usa esta tool cuando el usuario pregunta por datos de contacto o
-información puntual verificable.
+Tool estructurada: company_info con esquema Pydantic (Function Calling, Módulo 3).
 """
 
 from __future__ import annotations
 
-from langchain_core.tools import tool
+from langchain_core.tools import StructuredTool
 
 from riopaila_rag.config import SUPABASE_KEY, SUPABASE_URL
+from riopaila_rag.schemas import CompanyInfoSearchInput
+from riopaila_rag.tool_errors import tool_failure_message
 
 try:
     from supabase import create_client as _create_client
+
     _supabase = _create_client(SUPABASE_URL, SUPABASE_KEY)
 except Exception:
     _supabase = None
 
-# Categorías válidas en company_info
 _VALID_CATEGORIES = {
     "contacto",
     "redes_sociales",
@@ -33,53 +30,31 @@ _VALID_CATEGORIES = {
 }
 
 
-@tool
-def company_info_search(category: str = "") -> str:
-    """
-    Consulta datos estructurados y verificados de Riopaila Castilla.
-
-    Usa esta herramienta para preguntas sobre datos puntuales y exactos como:
-    - Contacto: teléfonos, emails, PBX, líneas de atención
-    - Redes sociales: URLs de LinkedIn, Instagram, YouTube, X
-    - Sedes: direcciones de oficinas y plantas
-    - Legal: NIT, razón social, tipo de sociedad, bolsa de valores
-    - Cifras: empleados, hectáreas, capacidad de producción, toneladas
-    - Negocio: segmentos, productos principales
-    - Sostenibilidad: iniciativas, metas
-    - Certificaciones: normas ISO, FSSC, Rainforest Alliance, etc.
-    - Fundacion: información de la Fundación Riopaila Castilla
-
-    Args:
-        category: Categoría a consultar. Valores válidos:
-            contacto | redes_sociales | sedes | legal | cifras |
-            negocio | sostenibilidad | certificaciones | fundacion
-            Deja vacío para obtener todas las categorías disponibles.
-
-    Returns:
-        Datos estructurados de la categoría solicitada.
-    """
+def _company_info_search_impl(category: str = "") -> str:
     if _supabase is None:
-        return "Error: cliente Supabase no disponible."
+        return tool_failure_message("servicio de datos estructurados no disponible")
 
-    category = category.strip().lower()
+    category = (category or "").strip().lower()
 
     if category and category not in _VALID_CATEGORIES:
         cats = ", ".join(sorted(_VALID_CATEGORIES))
-        return (
-            f"Categoría '{category}' no reconocida. "
-            f"Categorías disponibles: {cats}"
+        return tool_failure_message(
+            f"categoría '{category}' no reconocida; categorías válidas: {cats}"
         )
 
-    query = _supabase.table("company_info").select("category, key, value, description")
-    if category:
-        query = query.eq("category", category)
-
-    result = query.order("category").order("key").execute()
+    try:
+        query = _supabase.table("company_info").select(
+            "category, key, value, description"
+        )
+        if category:
+            query = query.eq("category", category)
+        result = query.order("category").order("key").execute()
+    except Exception as exc:
+        return tool_failure_message(f"error al consultar datos corporativos: {exc}")
 
     if not result.data:
-        return "No se encontraron datos para esa categoría."
+        return tool_failure_message("no hay datos para esa categoría")
 
-    # Agrupar por categoría para una respuesta legible
     grouped: dict[str, list[str]] = {}
     for row in result.data:
         cat = row["category"]
@@ -96,3 +71,14 @@ def company_info_search(category: str = "") -> str:
         parts.append(f"## {cat.upper()}\n" + "\n".join(entries))
 
     return "\n\n".join(parts)
+
+
+company_info_search = StructuredTool.from_function(
+    func=_company_info_search_impl,
+    name="company_info_search",
+    description=(
+        "Consulta datos exactos y verificados: contacto, redes, sedes, legal (NIT), "
+        "cifras, negocio, sostenibilidad, certificaciones, fundación."
+    ),
+    args_schema=CompanyInfoSearchInput,
+)

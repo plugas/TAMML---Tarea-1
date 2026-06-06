@@ -12,7 +12,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, messages_from_dict
 from supabase import create_client, Client
 
-from riopaila_rag.config import SUPABASE_KEY, SUPABASE_URL
+from riopaila_rag.config import SUPABASE_KEY, SUPABASE_URL, check_supabase
 
 
 class SupabaseChatHistory(BaseChatMessageHistory):
@@ -22,6 +22,7 @@ class SupabaseChatHistory(BaseChatMessageHistory):
     """
 
     def __init__(self, session_id: str) -> None:
+        check_supabase()
         self.session_id = session_id
         self._client: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 

@@ -193,6 +193,16 @@ def _cut_from_regex(s: str, rx: re.Pattern[str]) -> str:
     return (s[: m.start()].strip() if m else s).strip()
 
 
+def clean_assistant_message_for_chat_ui(s: str) -> str:
+    """Texto visible en la burbuja del chat (sin citas RAG ni volcado de herramientas).
+
+    Misma limpieza que el PDF, pero conserva Markdown (negritas, listas).
+    """
+    if not (s or "").strip():
+        return s or ""
+    return _strip_assistant_evidence_for_pdf(s.strip())
+
+
 def _strip_assistant_evidence_for_pdf(s: str) -> str:
     """Quita del texto del asistente citas, metadatos RAG y eco de herramientas (solo exportación PDF)."""
     if not (s or "").strip():

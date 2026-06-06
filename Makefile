@@ -4,6 +4,21 @@
 app:             ## [Módulo 2] Lanza la interfaz Streamlit del agente conversacional
 	uv run python run_app.py
 
+api:             ## [Módulo 3] API FastAPI del agente (puerto 8000)
+	uv run uvicorn riopaila_rag.api.main:app --host 0.0.0.0 --port 8000
+
+verify-m3:       ## [Módulo 3] Verifica stack LangChain, env y Supabase
+	uv run python scripts/verify_modulo3.py
+
+test-api:        ## [Módulo 3] Verifica + prueba POST /chat (API debe estar en marcha)
+	uv run python scripts/verify_modulo3.py --api http://127.0.0.1:8000
+
+seed-logs:       ## [Módulo 3] Pobla conversation_logs vía API (requiere make api)
+	uv run python scripts/seed_conversation_logs.py --api http://127.0.0.1:8000
+
+informe-pdf:     ## [Módulo 3] Genera docs/INFORME_TECNICO_MODULO3.pdf
+	uv run python scripts/generate_informe_pdf.py
+
 # ── Scrapers ───────────────────────────────────────────────────────────────────
 scrape-web:      ## Extrae contenido del sitio web de Riopaila
 	uv run python -m riopaila_chatbot.scrapers.web

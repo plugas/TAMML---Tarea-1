@@ -248,6 +248,8 @@ def _image_file_to_data_uri(path: str) -> str:
         mime = "image/jpeg"
     elif ext == ".webp":
         mime = "image/webp"
+    elif ext == ".svg":
+        mime = "image/svg+xml"
     with open(path, "rb") as f:
         b64 = base64.standard_b64encode(f.read()).decode("ascii")
     return f"data:{mime};base64,{b64}"
@@ -808,7 +810,9 @@ def inyectar_estilos_globales() -> None:
             }}
             .feat-head-agent .feat-head-title {{ color: {C_GREEN}; }}
             .feat-head-agent .feat-head-sub {{ color: {C_ORANGE_SUB}; }}
-            .feat-head-agent .feat-head-material {{ color: {C_GREEN}; }}
+            .feat-head-agent .feat-head-material {{
+                color: {C_ORANGE} !important;
+            }}
 
             .feat-body-white {{
                 background: {C_WHITE};
@@ -1014,6 +1018,54 @@ def inyectar_estilos_globales() -> None:
             a.feat-btn.feat-btn--agent:visited *,
             a.feat-btn.feat-btn--agent:hover * {{
                 color: #ffffff !important;
+            }}
+            /* Iconos flotantes derecha — solo logo (WhatsApp + Telegram) */
+            .rc-float-dock {{
+                position: fixed;
+                right: 14px;
+                top: 42%;
+                transform: translateY(-50%);
+                z-index: 99999;
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                pointer-events: none;
+            }}
+            .rc-float-tab {{
+                pointer-events: auto;
+                display: block;
+                background: transparent !important;
+                padding: 0;
+                margin: 0;
+                border: none;
+                text-decoration: none !important;
+                line-height: 0;
+                transition: transform 0.2s ease, filter 0.2s ease;
+            }}
+            .rc-float-tab:hover {{
+                transform: scale(1.1) translateX(-3px);
+            }}
+            .rc-float-tab svg {{
+                display: block !important;
+                width: 56px !important;
+                height: 56px !important;
+                border-radius: 50%;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+            }}
+            .rc-float-tab--pending svg {{
+                opacity: 0.5;
+            }}
+            @media (max-width: 640px) {{
+                .rc-float-dock {{
+                    top: auto;
+                    bottom: 96px;
+                    right: 10px;
+                    transform: none;
+                }}
+                .rc-float-tab svg {{
+                    width: 52px !important;
+                    height: 52px !important;
+                }}
             }}
             .card-body {{
                 margin: 0;
@@ -1366,7 +1418,7 @@ def inyectar_estilos_globales() -> None:
                 overflow-y: hidden !important;
                 display: flex !important;
                 flex-direction: column !important;
-                min-height: max(min(58vh, 590px), calc(100svh - 470px)) !important;
+                min-height: max(min(58vh, 560px), calc(100svh - 500px)) !important;
                 max-height: min(calc(100svh - 200px), 1080px) !important;
             }}
             html:has(#qa-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type,
@@ -1399,6 +1451,7 @@ def inyectar_estilos_globales() -> None:
                 overflow: hidden !important;
                 display: flex !important;
                 flex-direction: column !important;
+                align-items: stretch !important;
             }}
             html:has(#qa-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"]:has(.qa-chat-gray-root) {{
                 /* misma celda que .st-key-qa_chat_inset; regla de respaldo */
@@ -1494,8 +1547,8 @@ def inyectar_estilos_globales() -> None:
                 height: 4px;
                 margin-bottom: 14px;
             }}
-            /* Columna ejemplos: scroll vertical dentro del alto de la fila (evita desborde al abrir las 20 preguntas) */
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack) > div[data-testid="stVerticalBlock"] {{
+            /* Columna ejemplos Q&A (no Agente — usa qa-ejemplos-stack--agent) */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack):not(:has(.qa-ejemplos-stack--agent)) > div[data-testid="stVerticalBlock"] {{
                 background: transparent !important;
                 border: none !important;
                 box-shadow: none !important;
@@ -1506,11 +1559,19 @@ def inyectar_estilos_globales() -> None:
                 flex: 1 1 auto !important;
                 display: flex !important;
                 flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
                 overflow-x: hidden !important;
                 overflow-y: auto !important;
                 overscroll-behavior: contain !important;
                 scrollbar-width: thin !important;
                 scrollbar-color: rgba(27, 94, 32, 0.28) transparent !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack):not(:has(.qa-ejemplos-stack--agent)) > div[data-testid="stVerticalBlock"] > div {{
+                flex-grow: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack):not(:has(.qa-ejemplos-stack--agent)) > div[data-testid="stVerticalBlock"] > div:has(.qa-ejemplos-only-heading) {{
+                flex-shrink: 0 !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack) > div[data-testid="stVerticalBlock"]::-webkit-scrollbar {{
                 width: 8px !important;
@@ -1570,18 +1631,29 @@ def inyectar_estilos_globales() -> None:
                 box-sizing: border-box !important;
             }}
             /* Solo el panel principal de mensajes (no la fila de 4 temas rápidos ni el compositor) */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div:has(.qa-chat-transcript-block),
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div:has(.qa-chat-transcript-shell) {{
                 flex: 1 1 0% !important;
                 min-height: 0 !important;
-                overflow: hidden !important;
+                overflow: visible !important;
             }}
             /* Altura explícita: el DOM tiene ElementContainer (marcador) antes del LayoutWrapper; sin esto el markdown crece y rompe el flex */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) [data-testid="stElementContainer"]:has(.qa-chat-transcript-block),
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) [data-testid="stElementContainer"]:has(.qa-chat-transcript-shell) {{
                 flex: 1 1 0% !important;
                 min-height: 0 !important;
-                max-height: 100% !important;
-                overflow: hidden !important;
+                max-height: none !important;
+                overflow: visible !important;
                 align-self: stretch !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-transcript-block {{
+                box-sizing: border-box !important;
+                width: 100% !important;
+                flex: 1 1 0% !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-transcript-shell {{
                 box-sizing: border-box !important;
@@ -1593,6 +1665,14 @@ def inyectar_estilos_globales() -> None:
                 display: flex !important;
                 flex-direction: column !important;
                 overflow: hidden !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-latest-assistant {{
+                flex-shrink: 0 !important;
+                width: 100% !important;
+                padding: 2px 2px 6px 2px !important;
+                border-top: 1px solid rgba(27, 94, 32, 0.14) !important;
+                background: rgba(255, 255, 255, 0.55) !important;
+                border-radius: 0 0 10px 10px !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-scroll-viewport {{
                 box-sizing: border-box !important;
@@ -1622,13 +1702,18 @@ def inyectar_estilos_globales() -> None:
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-scroll-viewport::-webkit-scrollbar-thumb:hover {{
                 background: rgba(27, 94, 32, 0.42) !important;
             }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stMarkdownContainer"]:has(.qa-chat-transcript-block),
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stMarkdown"]:has(.qa-chat-transcript-block),
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stMarkdownContainer"]:has(.qa-chat-transcript-shell),
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stMarkdown"]:has(.qa-chat-transcript-shell) {{
                 min-height: 0 !important;
-                overflow: hidden !important;
+                overflow: visible !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stElementContainer"]:has(.qa-chat-transcript-block) {{
+                overflow: visible !important;
             }}
             /* Temas rápidos, compositor y limpiar no deben comprimirse */
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div:not(:has(.qa-chat-transcript-shell)) {{
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div:not(:has(.qa-chat-transcript-block)):not(:has(.qa-chat-transcript-shell)) {{
                 flex-shrink: 0 !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack) {{
@@ -1647,35 +1732,122 @@ def inyectar_estilos_globales() -> None:
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack) [class*="st-key-qa_ejemplo_"] {{
                 margin-bottom: 10px !important;
+                flex: 0 0 auto !important;
+                flex-grow: 0 !important;
+                flex-shrink: 0 !important;
+                align-self: stretch !important;
+                height: auto !important;
+                max-height: none !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack) [class*="st-key-qa_ejemplo_"]:last-child {{
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack) [class*="st-key-qa_ejemplo_"]:last-of-type {{
                 margin-bottom: 0 !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] {{
+            /* Ejemplos: icono a la izquierda, texto a la derecha; altura uniforme 88px (3 líneas máx.) */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton {{
+                flex: 0 0 auto !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[data-testid="baseButton-secondary"] {{
                 background: {C_WHITE} !important;
+                background-color: {C_WHITE} !important;
                 border: 1px solid #e0e0e0 !important;
                 border-radius: 10px !important;
                 color: {C_TEXT} !important;
-                min-height: 72px !important;
-                padding: 14px 14px !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                height: 88px !important;
+                min-height: 88px !important;
+                max-height: 88px !important;
+                padding: 12px 14px !important;
                 text-align: left !important;
                 justify-content: flex-start !important;
                 font-weight: 500 !important;
                 font-size: 0.84rem !important;
-                line-height: 1.38 !important;
+                line-height: 1.35 !important;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+                display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
                 gap: 12px !important;
                 white-space: normal !important;
+                overflow: hidden !important;
+                box-sizing: border-box !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] p {{
-                color: {C_TEXT} !important;
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button > div,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] > div {{
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 12px !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button .material-symbols-outlined,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] .material-symbols-outlined {{
+                flex-shrink: 0 !important;
+                align-self: center !important;
+                font-size: 22px !important;
+                margin: 0 !important;
+                color: {C_GREEN} !important;
+                -webkit-text-fill-color: {C_GREEN} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] [data-testid="stMarkdownContainer"] {{
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 text-align: left !important;
             }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button [data-testid="stMarkdownContainer"] * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"] [data-testid="stMarkdownContainer"] p {{
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                text-align: left !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 3 !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                margin: 0 !important;
+                line-height: 1.35 !important;
+                font-size: 0.84rem !important;
+                font-weight: 500 !important;
+                white-space: normal !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"]:not(:has(p)) span:not(.material-symbols-outlined) {{
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                color: {C_TEXT} !important;
+                text-align: left !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 3 !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+                line-height: 1.35 !important;
+                font-size: 0.84rem !important;
+                font-weight: 500 !important;
+                white-space: normal !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button:hover,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_ejemplo_"] .stButton > button[kind="secondary"]:hover {{
                 background: #f1f8f4 !important;
+                background-color: #f1f8f4 !important;
                 border-color: rgba(27, 94, 32, 0.35) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
             }}
             /* 20 preguntas Módulo 1 (debajo de la tarjeta Q&A): sin tope — crece con la página */
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] div[data-testid="stVerticalBlock"] {{
@@ -1691,18 +1863,27 @@ def inyectar_estilos_globales() -> None:
                 overflow-y: visible !important;
                 overflow-x: hidden !important;
             }}
-            /* Lista Módulo 1: compacta, alineada a la izquierda, sin bloques “pesados” */
+            /* Lista Módulo 1: todo verde claro (sin superficies oscuras del tema Streamlit) */
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] {{
-                border: 1px solid rgba(27, 94, 32, 0.14) !important;
+                border: 1px solid rgba(27, 94, 32, 0.22) !important;
                 border-radius: 12px !important;
-                background: linear-gradient(180deg, #fafcfb 0%, #f3f7f4 100%) !important;
-                box-shadow: 0 1px 3px rgba(0, 50, 30, 0.06) !important;
+                background: linear-gradient(180deg, #f4faf4 0%, {C_GREEN_SOFT} 100%) !important;
+                box-shadow: 0 1px 3px rgba(27, 94, 32, 0.08) !important;
+                color-scheme: light !important;
+                --widget-background-color: {C_GREEN_SOFT} !important;
+                --secondary-background-color: {C_GREEN_SOFT} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] details[data-testid="stExpander"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpanderDetails"] {{
+                background: #f1f8f4 !important;
+                color: {C_TEXT} !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] summary {{
                 padding: 12px 14px !important;
                 font-weight: 700 !important;
                 font-size: 0.92rem !important;
                 color: {C_GREEN} !important;
+                background: transparent !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"]:has(.stButton) {{
                 margin-bottom: 5px !important;
@@ -1713,7 +1894,10 @@ def inyectar_estilos_globales() -> None:
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton {{
                 width: 100% !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] {{
+            /* Botones lista Módulo 1: compatibilidad tema oscuro Streamlit (sin kind en DOM / variables tema) */
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button {{
                 width: 100% !important;
                 min-height: 0 !important;
                 height: auto !important;
@@ -1722,8 +1906,9 @@ def inyectar_estilos_globales() -> None:
                 align-items: flex-start !important;
                 text-align: left !important;
                 border-radius: 8px !important;
-                border: 1px solid rgba(27, 94, 32, 0.1) !important;
-                background: #ffffff !important;
+                border: 1px solid rgba(27, 94, 32, 0.35) !important;
+                background: {C_GREEN_SOFT} !important;
+                background-color: {C_GREEN_SOFT} !important;
                 box-shadow: none !important;
                 font-weight: 500 !important;
                 font-size: 0.8125rem !important;
@@ -1731,25 +1916,50 @@ def inyectar_estilos_globales() -> None:
                 white-space: normal !important;
                 word-break: break-word !important;
                 color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
                 transition: background 0.15s ease, border-color 0.15s ease !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] p {{
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"] p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button p {{
                 text-align: left !important;
                 margin: 0 !important;
                 width: 100% !important;
                 white-space: normal !important;
                 word-break: break-word !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"]:hover {{
-                background: #eef6ef !important;
-                border-color: rgba(27, 94, 32, 0.28) !important;
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"] span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"] span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button [data-testid="stMarkdownContainer"] * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[kind="secondary"]:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button[data-testid="baseButton-secondary"]:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] .stButton > button:hover {{
+                background: #c8e6c9 !important;
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.45) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] .stCaption {{
                 font-size: 0.78rem !important;
                 line-height: 1.45 !important;
-                color: {C_TEXT_MUTED} !important;
+                color: #37474f !important;
+                -webkit-text-fill-color: #37474f !important;
                 margin-bottom: 10px !important;
                 padding: 0 2px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] .stCaption *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] [data-testid="stCaptionContainer"] *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[class*="st-key-qa_m1_below_card"] [data-testid="stExpander"] [data-testid="stMarkdownContainer"] p {{
+                color: #37474f !important;
+                -webkit-text-fill-color: #37474f !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-m1-below-spacer {{
                 display: block !important;
@@ -1827,7 +2037,7 @@ def inyectar_estilos_globales() -> None:
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bubble--bot {{
                 flex: 0 1 auto !important;
                 min-width: 0 !important;
-                max-width: min(100%, 600px) !important;
+                max-width: min(100%, 680px) !important;
                 background: {C_WHITE} !important;
                 border: 1px solid #e0e0e0 !important;
                 border-radius: 16px 16px 16px 6px !important;
@@ -1904,6 +2114,29 @@ def inyectar_estilos_globales() -> None:
                 color: #1565c0 !important;
                 text-decoration: underline !important;
                 text-underline-offset: 2px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bot-body.qa-chat-bot-md .qa-md-sources-hdr {{
+                margin-top: 1rem !important;
+                padding-top: 0.7rem !important;
+                border-top: 1px solid rgba(27, 94, 32, 0.22) !important;
+                font-size: 0.68rem !important;
+                font-weight: 800 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+                color: {C_GREEN} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bot-body.qa-chat-bot-md .qa-md-sources-hdr + ul {{
+                margin-top: 0.35em !important;
+                padding-left: 1.15rem !important;
+                border-radius: 10px !important;
+                background: rgba(27, 94, 32, 0.04) !important;
+                padding: 0.5rem 0.85rem 0.55rem 1.35rem !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-bot-body.qa-chat-bot-md .qa-md-sources-hdr + ul li {{
+                margin: 0.28em 0 !important;
+                font-size: 0.875rem !important;
+                color: #455a64 !important;
+                line-height: 1.45 !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) .qa-chat-avatar--bot {{
                 width: 40px;
@@ -1982,39 +2215,134 @@ def inyectar_estilos_globales() -> None:
                 border-color: {C_GREEN} !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] {{
+                display: flex !important;
+                flex: 1 1 auto !important;
+                justify-content: center !important;
+                align-items: stretch !important;
+                align-self: stretch !important;
                 flex-shrink: 0 !important;
-                padding-bottom: 0 !important;
+                margin-top: 6px !important;
+                margin-bottom: 10px !important;
+                padding: 0 !important;
+                width: 100% !important;
+                min-height: 48px !important;
             }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] {{
+                display: flex !important;
+                flex: 1 1 auto !important;
+                justify-content: center !important;
+                align-items: stretch !important;
+                align-self: stretch !important;
+                flex-shrink: 0 !important;
+                margin-top: 6px !important;
+                margin-bottom: 10px !important;
+                padding: 0 !important;
+                width: 100% !important;
+                min-height: 48px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] {{
+                width: 100% !important;
+                display: flex !important;
+                align-items: stretch !important;
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] {{
                 background: {C_WHITE} !important;
                 border: 1px solid #cfd8dc !important;
+                border-radius: 10px !important;
+                box-sizing: border-box !important;
                 color: #455a64 !important;
+                width: 100% !important;
+                min-height: 48px !important;
+                height: 100% !important;
+                max-height: none !important;
+                flex: 1 1 auto !important;
+                align-self: stretch !important;
+                padding: 8px 14px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.45rem !important;
+                line-height: 1.15 !important;
+                white-space: normal !important;
             }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button p,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button span,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button [data-testid="stMarkdownContainer"],
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] p,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] span,
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] * {{
                 color: #455a64 !important;
             }}
-            /* Fila de botones limpiar + PDF: centrado y alineación vertical */
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"],
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"],
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf_off"] {{
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                margin-top: 8px !important;
-                margin-bottom: 12px !important;
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button [data-testid="stMarkdownContainer"],
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] [data-testid="stMarkdownContainer"] {{
+                margin: 0 !important;
+                line-height: 1.15 !important;
+                text-align: center !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button {{
-                background: {C_WHITE} !important;
-                border: 1px solid #cfd8dc !important;
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] svg,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] svg *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] path,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton svg,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton svg *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton path,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] svg,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] svg *,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"] path {{
                 color: #455a64 !important;
+                stroke: #455a64 !important;
+                fill: #455a64 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] [data-testid="stDownloadButton"] button:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton button:hover,
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton > button[kind="secondary"]:hover {{
+                background: #f1f8f4 !important;
+                border-color: {C_GREEN} !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_limpiar"] .stButton {{
                 width: 100% !important;
+                display: flex !important;
+                align-items: stretch !important;
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
             }}
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button p,
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button span,
-            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-agente_download_pdf"] [data-testid="stDownloadButton"] > button * {{
-                color: #455a64 !important;
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) {{
+                align-items: stretch !important;
+                gap: 10px !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) > div[data-testid="stColumn"] {{
+                display: flex !important;
+                align-items: stretch !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] {{
+                flex: 1 1 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                width: 100% !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stHorizontalBlock"]:has([class*="st-key-qa_export_pdf"]):has([class*="st-key-qa_limpiar"]) > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] {{
+                flex: 1 1 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                width: 100% !important;
+                min-height: 0 !important;
+            }}
+            [data-testid="stAppViewContainer"]:has(#qa-page-mount) [class*="st-key-qa_export_pdf"] .stDownloadButton {{
+                width: 100% !important;
             }}
             [data-testid="stAppViewContainer"]:has(#qa-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) div[data-testid="stColumn"]:has(.qa-composer-surface-anchor) [data-testid="stHorizontalBlock"]:has([data-testid="stTextInput"]) {{
                 align-items: center !important;
@@ -3030,6 +3358,128 @@ def inyectar_estilos_globales() -> None:
                 color: {C_TEXT_MUTED} !important;
                 margin-top: 1.25rem !important;
             }}
+
+            /*
+             * Lista “20 preguntas · Módulo 1”: verde claro fijo + variables tema (último bloque CSS).
+             */
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root),
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) {{
+                color-scheme: light !important;
+                background: linear-gradient(180deg, #f4faf4 0%, {C_GREEN_SOFT} 100%) !important;
+                border-radius: 12px !important;
+                --widget-background-color: {C_GREEN_SOFT} !important;
+                --secondary-background-color: {C_GREEN_SOFT} !important;
+                --text-color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) summary,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) summary {{
+                color: {C_GREEN} !important;
+                background: transparent !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) [data-testid="stExpanderDetails"],
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) > div:last-child {{
+                background: #f1f8f4 !important;
+                color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stCaption,
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) [data-testid="stCaptionContainer"],
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) [data-testid="stCaptionContainer"] *,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stCaption {{
+                color: #37474f !important;
+                -webkit-text-fill-color: #37474f !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton {{
+                width: 100% !important;
+                background: transparent !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button {{
+                width: 100% !important;
+                justify-content: flex-start !important;
+                align-items: flex-start !important;
+                text-align: left !important;
+                padding: 9px 12px 9px 14px !important;
+                min-height: 0 !important;
+                height: auto !important;
+                border-radius: 8px !important;
+                border: 1px solid rgba(27, 94, 32, 0.38) !important;
+                box-shadow: none !important;
+                background-color: {C_GREEN_SOFT} !important;
+                background-image: none !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                font-weight: 500 !important;
+                font-size: 0.8125rem !important;
+                line-height: 1.42 !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button:hover,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button:hover {{
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.5) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button p,
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button span,
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button [data-testid="stMarkdownContainer"],
+            [data-testid="stMain"] [data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button [data-testid="stMarkdownContainer"] *,
+            [data-testid="stMain"] details[data-testid="stExpander"]:has(.qa-m1-twenty-tests-root) .stButton > button p {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                background: transparent !important;
+                background-color: transparent !important;
+            }}
+
+            /* Respaldo: cada pregunta usa key=m1_prueba_N → clase st-key-m1_prueba_* (no depende de :has). */
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] .stButton > button,
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] button {{
+                background-color: {C_GREEN_SOFT} !important;
+                background-image: none !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                border: 1px solid rgba(27, 94, 32, 0.38) !important;
+                box-shadow: none !important;
+            }}
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] .stButton > button:hover,
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] button:hover {{
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.5) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] .stButton > button *,
+            [data-testid="stMain"] [class*="st-key-m1_prueba_"] button * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                background-color: transparent !important;
+                background-image: none !important;
+            }}
+            /* Mismo estilo sin depender de stMain (por si el árbol DOM cambia). */
+            [class*="st-key-m1_prueba_"] .stButton > button,
+            [class*="st-key-m1_prueba_"] .stButton > button[kind="secondary"],
+            [class*="st-key-m1_prueba_"] button[data-testid="baseButton-secondary"] {{
+                background-color: {C_GREEN_SOFT} !important;
+                background-image: none !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                border: 1px solid rgba(27, 94, 32, 0.38) !important;
+                box-shadow: none !important;
+            }}
+            [class*="st-key-m1_prueba_"] .stButton > button:hover {{
+                background-color: #c8e6c9 !important;
+                border-color: rgba(27, 94, 32, 0.5) !important;
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+            }}
+            [class*="st-key-m1_prueba_"] .stButton > button *,
+            [class*="st-key-m1_prueba_"] button * {{
+                color: {C_TEXT} !important;
+                -webkit-text-fill-color: {C_TEXT} !important;
+                background-color: transparent !important;
+            }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -3185,6 +3635,13 @@ def _respuesta_asistente_md_a_html_fragment(text: str) -> str:
         out = md_it.render(raw).strip()
         out = re.sub(r'href\s*=\s*"\s*javascript:[^"]*"', 'href="#"', out, flags=re.I)
         out = re.sub(r"href\s*=\s*'\s*javascript:[^']*'", "href='#'", out, flags=re.I)
+        # Título "Fuentes" típico del agente: párrafo+strong → bloque con estilo propio
+        out = re.sub(
+            r"<p>\s*<strong>\s*Fuentes\s*</strong>\s*</p>",
+            '<div class="qa-md-sources-hdr" role="heading" aria-level="3">Fuentes</div>',
+            out,
+            flags=re.I,
+        )
         return out
     except Exception:
         return html.escape(text).replace("\n", "<br/>")
@@ -3206,10 +3663,13 @@ def _html_qa_user_bubble(text: str) -> str:
     return f'<div class="qa-chat-wrap">{inner}</div>'
 
 
-def _html_qa_bot_bubble(text: str) -> str:
-    body = _respuesta_asistente_md_a_html_fragment(text)
+def _html_qa_bot_bubble(text: str, *, use_logo_avatar: bool = False) -> str:
+    raw = (text or "").strip()
+    body = _respuesta_asistente_md_a_html_fragment(raw)
+    if not body.strip():
+        body = f"<p>{html.escape(raw or '(sin respuesta)')}</p>"
     t = html.escape(_formato_hora_es())
-    logo_uri = _logotipo_card_data_uri()
+    logo_uri = _logotipo_card_data_uri() if use_logo_avatar else None
     if logo_uri:
         av = (
             f'<div class="qa-chat-avatar qa-chat-avatar--bot" aria-hidden="true">'
@@ -3912,6 +4372,12 @@ def _render_modulo1_veinte_pruebas_below_card() -> None:
             "20 preguntas · pruebas informe (Módulo 1)",
             expanded=False,
         ):
+            # Ancla CSS: permite forzar contraste alto aunque el tema Streamlit sea oscuro
+            # (los estilos van al final de `inyectar_estilos_globales`).
+            st.markdown(
+                '<div class="qa-m1-twenty-tests-root" aria-hidden="true" style="display:none"></div>',
+                unsafe_allow_html=True,
+            )
             st.caption(
                 "Pulsa una fila: se cargará en **Tu pregunta** (recuadro en la tarjeta de arriba). Luego **Enviar**. "
                 "Usa la lista para documentar el informe."
@@ -4074,6 +4540,75 @@ def _pie() -> None:
         f"</p>"
         f"{_html_footer_redes()}"
         f"</div></footer>",
+        unsafe_allow_html=True,
+    )
+
+
+# Iconos FAB circulares — SVG inline (nitidez en cualquier DPI; sin data-URI ni PNG)
+_SVG_FLOAT_WHATSAPP = """
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 60 60" role="img" aria-label="WhatsApp">
+  <circle cx="30" cy="30" r="30" fill="#25D366"/>
+  <g transform="translate(13 13) scale(1.34)">
+    <path fill="#fff" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+  </g>
+</svg>
+"""
+
+_SVG_FLOAT_TELEGRAM = """
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 60 60" role="img" aria-label="Telegram">
+  <circle cx="30" cy="30" r="30" fill="#27A7E7"/>
+  <path fill="#fff" d="M45.5 17.5L13 29.5c-2 .8-2 2-.4 2.5l8.3 2.6 3.2 9.8c.6 1.4 1.1 1.3 1.7.7l4.6-4.4 9.5 7c1.1.6 1.9.4 2.2-.9L47.8 19.5c.4-1.6-.9-2.4-1.7-2z"/>
+</svg>
+"""
+
+
+def _whatsapp_wa_me_url() -> str:
+    try:
+        from riopaila_rag.config import WHATSAPP_DEMO_NUMBER
+
+        wa_num = WHATSAPP_DEMO_NUMBER
+    except Exception:
+        wa_num = os.getenv("WHATSAPP_DEMO_NUMBER", "15550598036")
+    digits = re.sub(r"\D", "", wa_num or "15550598036")
+    return f"https://wa.me/{digits}"
+
+
+def _telegram_bot_url() -> str | None:
+    try:
+        from riopaila_rag.config import TELEGRAM_BOT_URL
+
+        url = (TELEGRAM_BOT_URL or "").strip()
+    except Exception:
+        url = os.getenv("TELEGRAM_BOT_URL", "").strip()
+    return url or None
+
+
+def _render_floating_social_tabs() -> None:
+    """Botones flotantes circulares — WhatsApp (agente) + Telegram."""
+    wa_url = html.escape(_whatsapp_wa_me_url())
+    tg_raw = _telegram_bot_url()
+    tg_title = "Chatea con el agente en Telegram"
+    if tg_raw:
+        tg_href = html.escape(tg_raw)
+        tg_block = (
+            f'<a class="rc-float-tab" href="{tg_href}" target="_blank" '
+            f'rel="noopener noreferrer" title="{html.escape(tg_title)}">'
+            f"{_SVG_FLOAT_TELEGRAM}</a>"
+        )
+    else:
+        tg_block = (
+            f'<span class="rc-float-tab rc-float-tab--pending" '
+            f'title="Configura TELEGRAM_BOT_URL en .env (https://t.me/tu_bot)">'
+            f"{_SVG_FLOAT_TELEGRAM}</span>"
+        )
+    st.markdown(
+        f"""
+        <div class="rc-float-dock" role="complementary" aria-label="WhatsApp y Telegram">
+            <a class="rc-float-tab" href="{wa_url}" target="_blank" rel="noopener noreferrer"
+               title="Agente Riopaila en WhatsApp (Módulo 3)">{_SVG_FLOAT_WHATSAPP}</a>
+            {tg_block}
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -4589,7 +5124,8 @@ def _agente_session_id() -> str:
 def _render_agente_quick_topics(*, input_key: str) -> None:
     """Tarjetas sugeridas. Reusa keys `qa_quick_*` para heredar la CSS de Q&A."""
     st.markdown(
-        '<p class="qa-quick-lead">También puedes preguntar sobre:</p>',
+        '<div class="qa-agent-chat-divider" aria-hidden="true"></div>'
+        '<p class="qa-quick-lead qa-quick-lead--agent">También puedes preguntar sobre:</p>',
         unsafe_allow_html=True,
     )
     cols = st.columns(4, gap="medium")
@@ -4606,26 +5142,117 @@ def _render_agente_quick_topics(*, input_key: str) -> None:
                 st.rerun()
 
 
-def _render_agente_ejemplos_column(*, input_key: str) -> None:
-    """Columna izquierda. Reusa keys `qa_ejemplo_*` para heredar la CSS de Q&A."""
+def _material_icon_glyph(icon: str) -> str:
+    """`:material/badge:` → `badge` para Material Symbols en HTML."""
+    s = (icon or "").strip()
+    if s.startswith(":material/") and s.endswith(":"):
+        return s[len(":material/") : -1]
+    return "help_outline"
+
+
+def _inject_agente_ejemplos_css() -> None:
+    """Solo columna izquierda del Agente: botones claros y juntos (no toca el chat)."""
     st.markdown(
-        '<div class="qa-ejemplos-stack" aria-hidden="true"></div>',
+        f"""
+        <style>
+        html:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) {{
+            flex: 0 0 auto !important;
+            align-self: flex-start !important;
+            height: auto !important;
+            max-height: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) > div[data-testid="stVerticalBlock"] {{
+            flex: 0 0 auto !important;
+            height: auto !important;
+            max-height: none !important;
+            justify-content: flex-start !important;
+            gap: 8px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) > div[data-testid="stVerticalBlock"] > div {{
+            flex-grow: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-ejemplos-only-heading {{
+            margin: 0 0 8px 0 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] {{
+            flex: 0 0 auto !important;
+            margin: 0 0 8px 0 !important;
+            padding: 0 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"]:last-of-type {{
+            margin-bottom: 0 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] .stButton > button,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] .stButton > button[kind="secondary"],
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] .stButton > button[data-testid="baseButton-secondary"] {{
+            background: {C_WHITE} !important;
+            background-color: {C_WHITE} !important;
+            color: {C_TEXT} !important;
+            -webkit-text-fill-color: {C_TEXT} !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 10px !important;
+            min-height: 72px !important;
+            height: 72px !important;
+            max-height: 72px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] .stButton > button:hover {{
+            background: #f1f8f4 !important;
+            background-color: #f1f8f4 !important;
+            border-color: rgba(27, 94, 32, 0.35) !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] .stButton > button *:not(.material-symbols-outlined) {{
+            color: {C_TEXT} !important;
+            -webkit-text-fill-color: {C_TEXT} !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) [class*="st-key-agente_ejemplo_"] .stButton > button .material-symbols-outlined {{
+            color: {C_GREEN} !important;
+            -webkit-text-fill-color: {C_GREEN} !important;
+        }}
+        </style>
+        """,
         unsafe_allow_html=True,
     )
+
+
+def _on_agente_ejemplo_click(pregunta: str, input_key: str) -> None:
+    pregunta_limpia = pregunta.strip()
+    st.session_state[input_key] = pregunta_limpia
+    hist = st.session_state.setdefault("agente_chat_historial", [])
+    if not (
+        hist
+        and hist[-1].get("role") == "user"
+        and (hist[-1].get("content") or "").strip() == pregunta_limpia
+    ):
+        hist.append({"role": "user", "content": pregunta_limpia})
+    st.session_state._agente_pending_question = pregunta_limpia
+    st.session_state._agente_clear_input = True
+
+
+def _render_agente_ejemplos_column(*, input_key: str) -> None:
+    """Columna izquierda del Agente (solo aquí se aplica CSS de ejemplos)."""
+    st.markdown(
+        '<div class="qa-ejemplos-stack qa-ejemplos-stack--agent" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+    _inject_agente_ejemplos_css()
     st.markdown(
         '<p class="qa-ejemplos-only-heading">Ejemplos de preguntas</p>',
         unsafe_allow_html=True,
     )
     for i, (pregunta, icon) in enumerate(AGENTE_EJEMPLO_PREGUNTAS):
-        if st.button(
+        st.button(
             pregunta,
-            key=f"qa_ejemplo_{i}",
+            key=f"agente_ejemplo_{i}",
             use_container_width=True,
             type="secondary",
             icon=icon,
-        ):
-            st.session_state[input_key] = pregunta
-            st.rerun()
+            help=pregunta,
+            on_click=_on_agente_ejemplo_click,
+            kwargs={"pregunta": pregunta, "input_key": input_key},
+        )
 
 
 def _ejecutar_consulta_agente(pregunta: str) -> None:
@@ -4653,6 +5280,15 @@ def _procesar_pregunta_pendiente(pregunta: str) -> None:
     del bot del transcript después del rerun (look & feel idéntico al Q&A).
     """
     from riopaila_rag.agent import ask_streaming
+
+    pregunta_limpia = pregunta.strip()
+    hist = st.session_state.setdefault("agente_chat_historial", [])
+    if not (
+        hist
+        and hist[-1].get("role") == "user"
+        and (hist[-1].get("content") or "").strip() == pregunta_limpia
+    ):
+        hist.append({"role": "user", "content": pregunta_limpia})
 
     session_id = _agente_session_id()
     eventos_tools: list[dict] = []
@@ -4683,9 +5319,10 @@ def _procesar_pregunta_pendiente(pregunta: str) -> None:
         except Exception as e:
             respuesta_final = f"Lo siento, ocurrió un error procesando la respuesta: {e}"
 
+    display_text = _agente_assistant_display_text(respuesta_final)
     st.session_state.agente_chat_historial.append({
         "role": "assistant",
-        "content": respuesta_final,
+        "content": display_text or respuesta_final,
         "tools": eventos_tools,
     })
     st.session_state.pop("_agente_pending_question", None)
@@ -4736,8 +5373,23 @@ def _render_agente_composer() -> None:
             _ejecutar_consulta_agente(q)
 
 
+def _agente_assistant_display_text(content: object) -> str:
+    """Normaliza el contenido del asistente para la burbuja (str + limpieza de evidencias)."""
+    if content is None:
+        return ""
+    if not isinstance(content, str):
+        content = str(content)
+    try:
+        from riopaila_rag.agent_chat_pdf import clean_assistant_message_for_chat_ui
+
+        cleaned = clean_assistant_message_for_chat_ui(content)
+        return cleaned if cleaned.strip() else content.strip()
+    except Exception:
+        return content.strip()
+
+
 def _html_agente_chat_transcript(hist: list[dict]) -> str:
-    """Transcript del Agente — reutiliza las burbujas y clases de Q&A."""
+    """Transcript del Agente — flujo vertical sin recortes (clase ``--agent``)."""
     if not hist:
         inner = (
             '<p class="qa-empty-hint">'
@@ -4752,12 +5404,18 @@ def _html_agente_chat_transcript(hist: list[dict]) -> str:
             if role == "user":
                 parts.append(_html_qa_user_bubble(content))
             elif role == "assistant":
-                parts.append(_html_qa_bot_bubble(content))
+                parts.append(
+                    _html_qa_bot_bubble(
+                        _agente_assistant_display_text(content),
+                        use_logo_avatar=True,
+                    )
+                )
         inner = "".join(parts)
     return (
+        '<div class="qa-chat-transcript-block qa-chat-transcript-block--agent">'
         '<div class="qa-chat-transcript-shell">'
         '<div class="qa-chat-scroll-viewport" role="log" aria-live="polite" aria-relevant="additions">'
-        f"{inner}</div></div>"
+        f"{inner}</div></div></div>"
     )
 
 
@@ -4776,14 +5434,84 @@ def pagina_agente() -> None:
         unsafe_allow_html=True,
     )
 
+    try:
+        from riopaila_rag.config import check_openai, check_supabase
+
+        check_openai()
+        check_supabase()
+    except EnvironmentError as err:
+        st.error(str(err))
+        msg_u = str(err).upper()
+        if "SUPABASE" in msg_u:
+            st.info(
+                "Este proyecto usa `supabase-py` 2.3.x: en **SUPABASE_KEY** debe ir la clave JWT "
+                "**anon** (suele empezar por `eyJ`), no la clave `sb_publishable_`. "
+                "En Supabase: **Project Settings → API Keys** → pestaña **Legacy anon / "
+                "service_role** → copia **anon** y pégala en `.env`. "
+                "**Project URL** sigue igual en **SUPABASE_URL**. "
+                "Luego ejecuta los SQL `supabase/migrations/001_init.sql` y "
+                "`supabase/seeds/company_info.sql` si aún no lo hiciste, reinicia Streamlit y "
+                "`uv run python -m riopaila_rag.ingest` si falta vectorizar."
+            )
+        elif "OPENAI" in msg_u:
+            st.info(
+                "Añade `OPENAI_API_KEY` en el `.env` de la raíz del proyecto "
+                "(obtén una clave en [platform.openai.com](https://platform.openai.com/api-keys)) "
+                "y reinicia Streamlit."
+            )
+        else:
+            st.info("Revisa las variables del archivo `.env` en la raíz del proyecto y reinicia la app.")
+        return
+
     # CSS scopeado: estilo claro y centrado para el st.status y los expanders
     # del Agente (sobreescribe los estilos heredados con bajo contraste).
     st.markdown(
         f"""
         <style>
-        /* Wrapper del expander: marca el inicio en columna izquierda */
+        /* Fila ejemplos|chat: la izquierda no se estira a la altura del chat */
+        html:has(#agente-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type [data-testid="stHorizontalBlock"],
+        html:has(#agente-page-mount) div[data-testid="stVerticalBlock"][class*="st-key-qa_unified_card"]:has(.qa-unified-card-root) > div[data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type [data-testid="stHorizontalBlock"] {{
+            align-items: flex-start !important;
+        }}
+        /* Anula reglas Q&A que estiran la columna izquierda al alto del chat */
+        html:has(#agente-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent),
+        html:has(#agente-page-mount) div[data-testid="stVerticalBlock"][class*="st-key-qa_unified_card"]:has(.qa-unified-card-root) > div[data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) {{
+            max-height: none !important;
+            overflow: visible !important;
+        }}
+        /* Columna izquierda: altura según contenido, NO la del chat */
+        html:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) {{
+            flex: 0 0 auto !important;
+            align-self: flex-start !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) > div[data-testid="stVerticalBlock"] {{
+            flex: 0 0 auto !important;
+            height: auto !important;
+            max-height: none !important;
+            justify-content: flex-start !important;
+            align-content: flex-start !important;
+            align-items: stretch !important;
+            gap: 6px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-ejemplos-stack--agent) > div[data-testid="stVerticalBlock"] > div {{
+            flex: 0 0 auto !important;
+            flex-grow: 0 !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_ejemplos_rail"] > div[data-testid="stVerticalBlock"] {{
+            gap: 6px !important;
+        }}
         [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] {{
-            margin-top: 18px !important;
+            flex: 0 0 auto !important;
+            flex-grow: 0 !important;
+            margin-top: 14px !important;
+            width: 100% !important;
         }}
         /* Caja del expander (solo el de fuentes del agente, scopeado por wrapper key).
            Vive en la columna izquierda — ancho 100% del rail. */
@@ -4815,20 +5543,18 @@ def pagina_agente() -> None:
         [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"] {{
             background: {C_WHITE} !important;
             color: {C_TEXT} !important;
-            padding: 12px 14px 12px 14px !important;
-            height: 120px !important;
-            max-height: 120px !important;
-            min-height: 0 !important;
-            overflow-y: auto !important;
+            padding: 12px 14px 20px 14px !important;
+            height: 240px !important;
+            max-height: 240px !important;
+            overflow-y: scroll !important;
             overflow-x: hidden !important;
             scrollbar-width: thin !important;
             scrollbar-color: {C_GREEN} rgba(27, 94, 32, 0.08) !important;
             border-bottom-left-radius: 14px !important;
             border-bottom-right-radius: 14px !important;
-            font-size: 0.82rem !important;
+            font-size: 0.85rem !important;
             display: block !important;
             box-sizing: border-box !important;
-            contain: strict !important;
         }}
         /* Aire adicional al final del contenido del expander */
         [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[class*="st-key-agente_fuentes_wrapper"] [data-testid="stExpanderDetails"] > *:last-child {{
@@ -4897,6 +5623,131 @@ def pagina_agente() -> None:
         [data-testid="stAppViewContainer"]:has(#agente-page-mount) [data-testid="stExpander"] .material-symbols-outlined {{
             color: {C_GREEN} !important;
         }}
+
+        /* ── Agente: chat legible, sin recortes ni solapamiento con temas rápidos ── */
+        html:has(#agente-page-mount) [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] {{
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            max-height: none !important;
+            min-height: 0 !important;
+        }}
+        html:has(#agente-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type,
+        html:has(#agente-page-mount) div[data-testid="stVerticalBlock"][class*="st-key-qa_unified_card"]:has(.qa-unified-card-root) > div[data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type {{
+            overflow: visible !important;
+            max-height: none !important;
+        }}
+        html:has(#agente-page-mount) div[class*="st-key-qa_unified_card"] [data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type [data-testid="stHorizontalBlock"],
+        html:has(#agente-page-mount) div[data-testid="stVerticalBlock"][class*="st-key-qa_unified_card"]:has(.qa-unified-card-root) > div[data-testid="stVerticalBlock"][class*="st-key-qa_chat_inset"] > div[data-testid="stLayoutWrapper"]:first-of-type [data-testid="stHorizontalBlock"] {{
+            overflow: visible !important;
+            max-height: none !important;
+            align-items: flex-start !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) {{
+            overflow: visible !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] {{
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            gap: 14px !important;
+            padding-bottom: 12px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] {{
+            overflow: visible !important;
+            max-height: none !important;
+            flex: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] {{
+            overflow: visible !important;
+            max-height: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {{
+            overflow: visible !important;
+            max-height: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] {{
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            gap: 14px !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] ~ div[data-testid="stLayoutWrapper"] > div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div:has(.qa-chat-transcript-block--agent) {{
+            flex: none !important;
+            flex-shrink: 0 !important;
+            min-height: auto !important;
+            overflow: visible !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) [data-testid="stElementContainer"]:has(.qa-chat-transcript-block--agent) {{
+            flex: none !important;
+            flex-shrink: 0 !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+            margin-bottom: 4px !important;
+            position: relative !important;
+            z-index: 2 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stMarkdownContainer"]:has(.qa-chat-transcript-block--agent),
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stMarkdown"]:has(.qa-chat-transcript-block--agent) {{
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent {{
+            width: 100% !important;
+            flex: none !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+            display: block !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-transcript-shell {{
+            height: auto !important;
+            max-height: min(calc(100svh - 480px), 560px) !important;
+            overflow: hidden !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-scroll-viewport {{
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            max-height: min(calc(100svh - 480px), 560px) !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-wrap {{
+            flex-shrink: 0 !important;
+            overflow: visible !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-row {{
+            overflow: visible !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-bubble--bot,
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-bubble--user {{
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-chat-transcript-block--agent .qa-chat-bot-body {{
+            overflow: visible !important;
+            max-height: none !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-agent-chat-divider {{
+            display: block !important;
+            width: 100% !important;
+            height: 0 !important;
+            margin: 18px 0 10px 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-top: 1px solid rgba(27, 94, 32, 0.16) !important;
+            clear: both !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) .qa-quick-lead--agent {{
+            margin: 0 0 10px 0 !important;
+            padding-top: 0 !important;
+            clear: both !important;
+            position: relative !important;
+            z-index: 3 !important;
+        }}
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) [data-testid="stElementContainer"]:has(.qa-quick-lead--agent),
+        [data-testid="stAppViewContainer"]:has(#agente-page-mount) div[data-testid="stColumn"]:has(.qa-chat-stream-root) [data-testid="stElementContainer"]:has(.qa-agent-chat-divider) {{
+            flex-shrink: 0 !important;
+            overflow: visible !important;
+        }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -4957,6 +5808,9 @@ def pagina_agente() -> None:
                 _render_agente_ejemplos_column(input_key="qa_pregunta")
 
                 # ── Panel de fuentes del último mensaje del bot ─────────────
+                # Vive en la columna izquierda, debajo de los ejemplos.
+                # Aprovecha el espacio vacío del rail y queda siempre visible
+                # sin tapar el composer ni el chat.
                 if not pending:
                     ultimo_asistente = next(
                         (m for m in reversed(hist) if m.get("role") == "assistant"),
@@ -4965,7 +5819,6 @@ def pagina_agente() -> None:
                     if ultimo_asistente is not None and "tools" in ultimo_asistente:
                         with st.container(key="agente_fuentes_wrapper"):
                             _agente_render_tool_panel(ultimo_asistente.get("tools") or [])
-
 
             with chat_col:
                 st.markdown(
@@ -4989,29 +5842,43 @@ def pagina_agente() -> None:
 
                     _render_agente_composer()
 
-                    try:
-                        from riopaila_rag.agent_chat_pdf import build_agent_chat_pdf_bytes
-                        pdf_bytes = build_agent_chat_pdf_bytes(hist) if hist else None
-                    except Exception:
-                        pdf_bytes = None
+                    pdf_bytes: bytes | None = None
+                    if hist:
+                        try:
+                            from riopaila_rag.agent_chat_pdf import (
+                                build_agent_chat_pdf_bytes,
+                            )
 
-                    btn_col1, btn_col2 = st.columns([1, 1], gap="small")
-                    with btn_col1:
-                        if st.button("Limpiar conversación", key="qa_limpiar", type="secondary", use_container_width=True):
+                            pdf_bytes = build_agent_chat_pdf_bytes(hist)
+                        except Exception as exc:
+                            st.warning(f"No se pudo generar el PDF: {exc}")
+
+                    col_pdf, col_clr = st.columns(2, gap="medium")
+                    with col_pdf:
+                        if pdf_bytes is not None:
+                            st.download_button(
+                                "Descargar conversación (PDF)",
+                                data=pdf_bytes,
+                                file_name=(
+                                    "riopaila_agente_"
+                                    f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+                                ),
+                                mime="application/pdf",
+                                use_container_width=True,
+                                type="secondary",
+                                icon=":material/picture_as_pdf:",
+                                key="qa_export_pdf",
+                            )
+                    with col_clr:
+                        if st.button(
+                            "Limpiar conversación",
+                            key="qa_limpiar",
+                            type="secondary",
+                            use_container_width=True,
+                            icon=":material/delete_sweep:",
+                        ):
                             st.session_state["_agente_pending_chat_clear"] = True
                             st.rerun()
-                    with btn_col2:
-                        if pdf_bytes:
-                            st.download_button(
-                                label="Descargar PDF",
-                                data=pdf_bytes,
-                                file_name="conversacion_riopaila.pdf",
-                                mime="application/pdf",
-                                key="agente_download_pdf",
-                                use_container_width=True,
-                            )
-                        else:
-                            st.button("Descargar PDF", key="agente_download_pdf_off", disabled=True, use_container_width=True)
 
     st.markdown(
         '<div class="qa-m1-below-spacer" aria-hidden="true"></div>',
@@ -5028,6 +5895,7 @@ def main() -> None:
         initial_sidebar_state="expanded",
     )
     inyectar_estilos_globales()
+    _render_floating_social_tabs()
     _configurar_groq_api_key()
     _init_state()
     _sync_nav_from_query()
