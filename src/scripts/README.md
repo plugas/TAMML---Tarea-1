@@ -49,6 +49,16 @@ Limpia el archivo consolidado y produce `data/knowledge/riopaila_castilla_clean.
 
 Aplica filtros como deduplicación de líneas, normalización de espacios y eliminación de ruido de scraping.
 
+### Scripts del Módulo 3 (OpenFang) y Ruta B
+
+| Script | Comando | Qué hace |
+|---|---|---|
+| `seed_openfang_kv.py` | `make openfang-kv` | Carga los datos estructurados de `company_info.sql` al **KV Store** del agente OpenFang (`openfang memory set`). Solo stdlib + binario `openfang`. |
+| `ingest_openfang.py` | `make openfang-ingest` | Ingesta los documentos a la **memoria semántica** del agente vía la API OpenAI-compatible del OS (`:4200`). Solo stdlib (`urllib`). |
+| `telegram_bridge.py` | `make openfang-telegram` | Puente Telegram ↔ agente: long-polling `getUpdates` → `POST /v1/chat/completions` (`openfang:riopaila-coordinador`) → `sendMessage`. Sortea el bug 404 del canal nativo de v0.6.9. Solo stdlib. |
+| `seed_interactions.py` | `make tsne-seed` | [Ruta B] Siembra 48 preguntas (8 intenciones × 6 formulaciones) en el historial de `riopaila-faq` y guarda `data/analysis/intent_labels.json`. |
+| `tsne_analysis.py` | `make tsne` | [Ruta B] Extrae el historial JSONL de OpenFang, embedde, reduce con **t-SNE + KMeans** y genera `data/analysis/tsne_intenciones.png` + interpretación de clústeres. Requiere `uv sync --extra analysis`. |
+
 ## Orden de ejecución completo (desde cero)
 
 ```bash

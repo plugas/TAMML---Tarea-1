@@ -17,7 +17,7 @@ from riopaila_rag.tools import rag_search, company_info_search
 **Flujo interno:**
 1. Embedde la `query` con OpenAI `text-embedding-3-small` (1536 dimensiones).
 2. Llama a la función SQL `match_documents(query_embedding, match_count, filter)` que hace búsqueda por similitud coseno.
-3. Retorna los `RAG_TOP_K` (default 5) fragmentos más similares con header:
+3. Retorna los `RAG_TOP_K` (default 12) fragmentos más similares con header:
    ```
    [Fuente: <archivo.md> | Sección: <X> | Fragmento: 23/319 | Similitud: 0.87]
    <contenido del chunk>
@@ -51,7 +51,7 @@ from riopaila_rag.tools import rag_search, company_info_search
 | `certificaciones` | ISO, FSSC, Rainforest Alliance, Bonsucro, etc. |
 | `fundacion` | Información de la Fundación Riopaila Castilla |
 
-**Datos:** 42 filas verificadas, cargadas vía `supabase/seeds/company_info.sql`. Extraídas manualmente del KB consolidado durante la fase de setup.
+**Datos:** datos estructurados verificados (9 categorías), cargados vía `supabase/seeds/company_info.sql`. Extraídos manualmente del KB consolidado durante la fase de setup. La misma fuente alimenta el KV Store de OpenFang en el Módulo 3 (`seed_openfang_kv.py`).
 
 **Por qué existe esta tool:** la búsqueda semántica puede devolver datos antiguos o mal formateados (especialmente cifras numéricas, teléfonos truncados, etc.). Esta tool da respuestas **canónicas** verificadas, evitando alucinaciones en preguntas sensibles como el NIT.
 

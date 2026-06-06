@@ -76,7 +76,7 @@ def _render_institutional_header(pdf: FPDF) -> None:
 
     pdf.set_font("ExportFont", style="B", size=12.5)
     pdf.set_text_color(*_C_BRAND_GREEN)
-    pdf.cell(epw, 6.5, "Riopaila Castillo", align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(epw, 6.5, "Riopaila Castilla", align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
     pdf.set_font("ExportFont", style="", size=9.8)
     pdf.set_text_color(55, 71, 79)

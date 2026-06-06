@@ -18,9 +18,18 @@ from __future__ import annotations
 
 from typing import Iterator, Literal, TypedDict
 
+# IMPORTANTE: importar config ANTES que cualquier módulo de LangChain. config.py
+# llama a load_dotenv(), de modo que LANGCHAIN_TRACING_V2 / LANGCHAIN_API_KEY queden
+# en el entorno antes de que LangChain inicialice su cliente de tracing (LangSmith).
+# Ver CONTEXT.md §14.
+from riopaila_rag.config import LLM_MODEL, OPENAI_API_KEY, check_openai
+
 from langchain_core.messages import AIMessage, AIMessageChunk, HumanMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
+
+from riopaila_rag.memory import SupabaseChatHistory
+from riopaila_rag.tools import company_info_search, rag_search
 
 
 class AgentEvent(TypedDict, total=False):
@@ -29,10 +38,6 @@ class AgentEvent(TypedDict, total=False):
     name: str          # nombre de la tool (tool_call / tool_result)
     args: dict         # argumentos de la tool (tool_call)
     content: str       # contenido de salida (tool_result / token / final)
-
-from riopaila_rag.config import LLM_MODEL, OPENAI_API_KEY, check_openai
-from riopaila_rag.memory import SupabaseChatHistory
-from riopaila_rag.tools import company_info_search, rag_search
 
 SYSTEM_PROMPT = """\
 # Identidad

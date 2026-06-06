@@ -46,7 +46,7 @@ LANGCHAIN_PROJECT: str = _optional("LANGCHAIN_PROJECT", "riopaila-agent-module2"
 CHUNK_SIZE: int = int(_optional("CHUNK_SIZE", "1200"))
 
 # ── Retrieval ─────────────────────────────────────────────────────────────────
-RAG_TOP_K: int = int(_optional("RAG_TOP_K", "5"))
+RAG_TOP_K: int = int(_optional("RAG_TOP_K", "12"))
 
 # ── Rutas ─────────────────────────────────────────────────────────────────────
 ROOT_DIR: Path = Path(__file__).resolve().parent.parent.parent

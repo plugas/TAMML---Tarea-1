@@ -1,5 +1,5 @@
 ﻿"""
-Asistente Virtual Riopaila Castillo — Streamlit (tema claro, paleta institucional verde + terracota + burdeos).
+Asistente Virtual Riopaila Castilla — Streamlit (tema claro, paleta institucional verde + terracota + burdeos).
 Ejecutar: streamlit run src/riopaila_rag/app.py
 
 Núcleo Módulo 1 (Q&A sin RAG vectorial): base consolidada + chunking LangChain + Groq en Resumen, FAQ y Q&A.
@@ -83,7 +83,7 @@ LOGO_IMAGE = os.path.join(_DIR, "assets", "logo_riopaila.png")
 LOGOTIPO_CARD_IMAGE = os.path.join(_DIR, "assets", "logotipo_riopaila.png")
 _LOGOTIPO_CARD_CACHE: tuple[float | None, str | None] = (None, None)
 
-# Enlaces oficiales (redes Riopaila Castillo)
+# Enlaces oficiales (redes Riopaila Castilla)
 SOCIAL_LINKEDIN = (
     "https://www.linkedin.com/company/riopaila-castilla-s.-a.?originalSubdomain=co"
 )
@@ -109,9 +109,9 @@ NAV_MATERIAL_ICON: dict[str, str] = {
     "agent": ":material/smart_toy:",
 }
 
-PLACEHOLDER_Q = "¿Cuál es la historia de Riopaila Castillo?"
+PLACEHOLDER_Q = "¿Cuál es la historia de Riopaila Castilla?"
 PLACEHOLDER_A = (
-    "Riopaila Castillo es una empresa colombiana con origen en el Valle del Cauca, "
+    "Riopaila Castilla es una empresa colombiana con origen en el Valle del Cauca, "
     "con más de un siglo de trayectoria desde 1918, ligada al cultivo de caña de azúcar "
     "y a la transformación industrial. Hoy articula negocios de alimentos, energías "
     "renovables y biocombustibles, con énfasis en sostenibilidad y el territorio."
@@ -119,16 +119,16 @@ PLACEHOLDER_A = (
 
 # Atajos Q&A: (etiqueta visible, texto al enviar, icono Material del botón)
 QA_QUICK_TOPICS: list[tuple[str, str, str]] = [
-    ("Productos y servicios", "¿Qué productos y servicios ofrece Riopaila Castillo?", ":material/inventory_2:"),
-    ("Sostenibilidad", "¿Qué hace Riopaila Castillo en sostenibilidad y medio ambiente?", ":material/eco:"),
-    ("Nuestras operaciones", "¿Dónde y cómo opera Riopaila Castillo?", ":material/factory:"),
-    ("Noticias", "¿Dónde encuentro noticias e información oficial de Riopaila Castillo?", ":material/newspaper:"),
+    ("Productos y servicios", "¿Qué productos y servicios ofrece Riopaila Castilla?", ":material/inventory_2:"),
+    ("Sostenibilidad", "¿Qué hace Riopaila Castilla en sostenibilidad y medio ambiente?", ":material/eco:"),
+    ("Nuestras operaciones", "¿Dónde y cómo opera Riopaila Castilla?", ":material/factory:"),
+    ("Noticias", "¿Dónde encuentro noticias e información oficial de Riopaila Castilla?", ":material/newspaper:"),
 ]
 
 # Panel izquierdo Q&A: (pregunta al pulsar, icono Material)
 QA_EJEMPLO_PREGUNTAS: list[tuple[str, str]] = [
-    ("¿Cuál es la historia de Riopaila Castillo?", ":material/factory:"),
-    ("¿Qué productos ofrece Riopaila Castillo?", ":material/inventory_2:"),
+    ("¿Cuál es la historia de Riopaila Castilla?", ":material/factory:"),
+    ("¿Qué productos ofrece Riopaila Castilla?", ":material/inventory_2:"),
     ("¿Dónde están ubicadas sus operaciones?", ":material/location_on:"),
     ("¿Qué iniciativas de sostenibilidad tiene la empresa?", ":material/eco:"),
     ("¿Cómo puedo contactar a la empresa?", ":material/call:"),
@@ -153,7 +153,7 @@ AGENTE_EJEMPLO_PREGUNTAS: list[tuple[str, str]] = [
 
 # Módulo 1 — al menos 20 preguntas de prueba (informe / demo); cargan el campo Q&A al pulsar.
 MODULO1_PREGUNTAS_PRUEBA: tuple[str, ...] = (
-    "¿Cuál es la historia y el origen de Riopaila Castillo?",
+    "¿Cuál es la historia y el origen de Riopaila Castilla?",
     "¿Qué productos y servicios ofrece la empresa hoy?",
     "¿En qué regiones o municipios tiene presencia operativa?",
     "¿Qué papel juega la caña de azúcar en su modelo de negocio?",
@@ -278,7 +278,7 @@ def _render_hero_unificado(
     slides_json = json.dumps(uris)
     interval_ms = 5000
     cap_raw = cap if cap is not None else "Bienvenido al Asistente Virtual"
-    title_raw = title_txt if title_txt is not None else "Riopaila Castillo"
+    title_raw = title_txt if title_txt is not None else "Riopaila Castilla"
     sub_raw = sub if sub is not None else (
         "Tu fuente de información sobre nuestra empresa, productos, "
         "servicios y sostenibilidad."
@@ -491,7 +491,7 @@ def _render_hero_unificado(
 <body>
   <div class="hero-unified{root_mod}">
     <div class="hero-bg">
-      <img id="heroSlide" alt="Riopaila Castillo" />
+      <img id="heroSlide" alt="Riopaila Castilla" />
     </div>
     <div class="{scrim_class}" aria-hidden="true"></div>
 {hero_copy_block}
@@ -511,7 +511,7 @@ def _render_qa_header_bar() -> None:
     """Barra superior verde del mockup: icono + títulos a la izquierda, marca a la derecha."""
     logo_uri = _image_file_to_data_uri(LOGO_IMAGE) if os.path.isfile(LOGO_IMAGE) else ""
     brand = (
-        f'<div class="qa-header-brand"><img src="{html.escape(logo_uri, quote=True)}" alt="Riopaila Castillo" /></div>'
+        f'<div class="qa-header-brand"><img src="{html.escape(logo_uri, quote=True)}" alt="Riopaila Castilla" /></div>'
         if logo_uri
         else (
             '<div class="qa-header-brand qa-header-brand--text">'
@@ -527,7 +527,7 @@ def _render_qa_header_bar() -> None:
             <div class="qa-header-left">
               <span class="qa-header-leaf material-symbols-outlined" aria-hidden="true">eco</span>
               <div class="qa-header-titles">
-                <p class="qa-header-title">Asistente Virtual de Riopaila Castillo</p>
+                <p class="qa-header-title">Asistente Virtual de Riopaila Castilla</p>
                 <p class="qa-header-sub">Tu fuente de información sobre nuestra empresa</p>
               </div>
             </div>
@@ -3119,7 +3119,7 @@ def _render_qa_composer(
                 <h3 class="qa-composer-title">Q&amp;A &mdash; Haz tu pregunta</h3>
                 <p class="qa-composer-sub">
                     Historia, sostenibilidad, producci&oacute;n y m&aacute;s. Escribe con libertad:
-                    las respuestas se basan en la informaci&oacute;n oficial de Riopaila Castillo.
+                    las respuestas se basan en la informaci&oacute;n oficial de Riopaila Castilla.
                 </p>
             </div>
             """,
@@ -3145,7 +3145,7 @@ def _render_qa_composer(
     if show_composer_foot:
         st.markdown(
             "<p class='qa-composer-foot'>Nuestro asistente responderá basándose únicamente en la "
-            "información oficial de Riopaila Castillo.</p>",
+            "información oficial de Riopaila Castilla.</p>",
             unsafe_allow_html=True,
         )
 
@@ -3414,10 +3414,10 @@ def _render_card_respuesta(preg: str, resp: str, meta_prefix: str = "") -> None:
 
 FAQ_CATEGORIAS: list[dict[str, object]] = [
     {
-        "titulo": "¿Dónde están ubicadas las operaciones de Riopaila Castillo?",
+        "titulo": "¿Dónde están ubicadas las operaciones de Riopaila Castilla?",
         "relacionadas": [
             {
-                "pregunta": "¿Dónde están ubicadas las operaciones de Riopaila Castillo?",
+                "pregunta": "¿Dónde están ubicadas las operaciones de Riopaila Castilla?",
                 "respuesta": (
                     "Nuestras operaciones principales están ubicadas en el Valle del Cauca, Colombia. "
                     "Contamos con plantaciones, producción de azúcar, cogeneración de energía y destilerías "
@@ -3455,10 +3455,10 @@ FAQ_CATEGORIAS: list[dict[str, object]] = [
         ],
     },
     {
-        "titulo": "¿Qué productos y servicios ofrece Riopaila Castillo?",
+        "titulo": "¿Qué productos y servicios ofrece Riopaila Castilla?",
         "relacionadas": [
             {
-                "pregunta": "¿Qué productos y servicios ofrece Riopaila Castillo?",
+                "pregunta": "¿Qué productos y servicios ofrece Riopaila Castilla?",
                 "respuesta": (
                     "Ofrecemos soluciones ligadas al agroindustrial de la caña: azúcar y derivados, "
                     "generación de energía a partir de biomasa y bagazo, biocombustibles como el etanol, "
@@ -3486,10 +3486,10 @@ FAQ_CATEGORIAS: list[dict[str, object]] = [
         ],
     },
     {
-        "titulo": "¿Riopaila Castillo produce energía?",
+        "titulo": "¿Riopaila Castilla produce energía?",
         "relacionadas": [
             {
-                "pregunta": "¿Riopaila Castillo produce energía?",
+                "pregunta": "¿Riopaila Castilla produce energía?",
                 "respuesta": (
                     "Sí. Aprovechamos el bagazo y la biomasa asociada al proceso de la caña para generar "
                     "electricidad en esquemas de cogeneración, mejorando la eficiencia de las plantas y "
@@ -3517,10 +3517,10 @@ FAQ_CATEGORIAS: list[dict[str, object]] = [
         ],
     },
     {
-        "titulo": "¿Qué significa la sostenibilidad para Riopaila Castillo?",
+        "titulo": "¿Qué significa la sostenibilidad para Riopaila Castilla?",
         "relacionadas": [
             {
-                "pregunta": "¿Qué significa la sostenibilidad para Riopaila Castillo?",
+                "pregunta": "¿Qué significa la sostenibilidad para Riopaila Castilla?",
                 "respuesta": (
                     "Integra buenas prácticas agrícolas, eficiencia en plantas, cuidado del agua y del suelo, "
                     "relación con comunidades y trazabilidad en la cadena de valor como eje transversal."
@@ -3546,10 +3546,10 @@ FAQ_CATEGORIAS: list[dict[str, object]] = [
         ],
     },
     {
-        "titulo": "¿Cómo puedo trabajar con Riopaila Castillo?",
+        "titulo": "¿Cómo puedo trabajar con Riopaila Castilla?",
         "relacionadas": [
             {
-                "pregunta": "¿Cómo puedo trabajar con Riopaila Castillo?",
+                "pregunta": "¿Cómo puedo trabajar con Riopaila Castilla?",
                 "respuesta": (
                     "Las vacantes y convocatorias vigentes suelen publicarse en los canales oficiales. "
                     "Puedes empezar aquí:\n\n"
@@ -3605,7 +3605,7 @@ FAQ_CATEGORIAS: list[dict[str, object]] = [
             {
                 "pregunta": "¿Cómo diferenciar información oficial de rumores?",
                 "respuesta": (
-                    "Usa solo dominios y cuentas verificadas de Riopaila Castillo / Riopaila Castilla y "
+                    "Usa solo dominios y cuentas verificadas de Riopaila Castilla y "
                     "comunicados corporativos. Este asistente complementa con base en la documentación del proyecto."
                 ),
                 "icono_respuesta": "gavel",
@@ -4051,15 +4051,15 @@ def _html_footer_redes() -> str:
     yt = html.escape(SOCIAL_YOUTUBE, quote=True)
     fb = html.escape(SOCIAL_FACEBOOK, quote=True)
     return (
-        f'<nav class="footer-social" aria-label="Redes sociales de Riopaila Castillo">'
+        f'<nav class="footer-social" aria-label="Redes sociales de Riopaila Castilla">'
         f'<a class="footer-social-link footer-social-link--in" href="{li}" target="_blank" '
-        f'rel="noopener noreferrer" title="LinkedIn" aria-label="Riopaila Castillo en LinkedIn">{_svg_in}</a>'
+        f'rel="noopener noreferrer" title="LinkedIn" aria-label="Riopaila Castilla en LinkedIn">{_svg_in}</a>'
         f'<a class="footer-social-link footer-social-link--ig" href="{ig}" target="_blank" '
-        f'rel="noopener noreferrer" title="Instagram" aria-label="Riopaila Castillo en Instagram">{_svg_ig}</a>'
+        f'rel="noopener noreferrer" title="Instagram" aria-label="Riopaila Castilla en Instagram">{_svg_ig}</a>'
         f'<a class="footer-social-link footer-social-link--yt" href="{yt}" target="_blank" '
-        f'rel="noopener noreferrer" title="YouTube" aria-label="Riopaila Castillo en YouTube">{_svg_yt}</a>'
+        f'rel="noopener noreferrer" title="YouTube" aria-label="Riopaila Castilla en YouTube">{_svg_yt}</a>'
         f'<a class="footer-social-link footer-social-link--fb" href="{fb}" target="_blank" '
-        f'rel="noopener noreferrer" title="Facebook" aria-label="Riopaila Castillo en Facebook">{_svg_fb}</a>'
+        f'rel="noopener noreferrer" title="Facebook" aria-label="Riopaila Castilla en Facebook">{_svg_fb}</a>'
         f"</nav>"
     )
 
@@ -4070,7 +4070,7 @@ def _pie() -> None:
         f'<footer class="app-footer-wrap" role="contentinfo">'
         f'<div class="app-footer-inner">'
         f'<p class="app-footer-copy">'
-        f"© {y} Riopaila Castillo. Todos los derechos reservados."
+        f"© {y} Riopaila Castilla. Todos los derechos reservados."
         f"</p>"
         f"{_html_footer_redes()}"
         f"</div></footer>",
@@ -4095,7 +4095,7 @@ def _explora_funcionalidades_html() -> str:
                         {F["icon_doc"]}
                         <div>
                             <p class="feat-head-title">Resumen</p>
-                            <p class="feat-head-sub">Obtén un resumen de Riopaila Castillo.</p>
+                            <p class="feat-head-sub">Obtén un resumen de Riopaila Castilla.</p>
                         </div>
                     </div>
                 </div>
@@ -4141,7 +4141,7 @@ def _explora_funcionalidades_html() -> str:
                 </div>
                 <div class="feat-body-white feat-body-grow">
                     <div class="feat-illo feat-illo-fixed">{F["illo_qa"]}</div>
-                    <p class="feat-desc">Escribe tu pregunta sobre Riopaila Castillo y nuestro asistente te responderá.</p>
+                    <p class="feat-desc">Escribe tu pregunta sobre Riopaila Castilla y nuestro asistente te responderá.</p>
                 </div>
                 <div class="feat-card-footer">
                     <a class="feat-btn feat-btn--yellow" href="?nav={q_qa}" target="_self">Ir a Q&amp;A →</a>
@@ -4250,7 +4250,7 @@ def pagina_resumen() -> None:
             _collect_hero_images(),
             hero_layout="faq_banner",
             show_cap=False,
-            title_txt="Resumen de Riopaila Castillo",
+            title_txt="Resumen de Riopaila Castilla",
             sub=(
                 "Toda la página usa consultas al consolidado (recuperación léxica + LangChain + Groq): "
                 "resumen, propósito, mensaje de cierre y líneas de negocio."
@@ -5022,7 +5022,7 @@ def pagina_agente() -> None:
 
 def main() -> None:
     st.set_page_config(
-        page_title="Riopaila Castillo — Asistente",
+        page_title="Riopaila Castilla — Asistente",
         page_icon="🌿",
         layout="wide",
         initial_sidebar_state="expanded",

@@ -1,0 +1,50 @@
+# OpenFang Agent OS — configuración de ejemplo para el proyecto Riopaila Castilla.
+# Copiar a ~/.openfang/config.toml y reiniciar el daemon: `openfang start`.
+
+api_listen = "127.0.0.1:4200"   # API + dashboard. Para Docker/LAN usar "0.0.0.0:4200".
+
+# ── Modelo por defecto ─────────────────────────────────────────────────────────
+# Opción RECOMENDADA (fiable en el bucle de agente de OpenFang): OpenAI gpt-4o-mini.
+# Mismo modelo del Módulo 2. Requiere OPENAI_API_KEY en el entorno (ver .env).
+[default_model]
+provider = "openai"
+model = "gpt-4o-mini"
+api_key_env = "OPENAI_API_KEY"
+
+# Opción LOCAL (soberanía de datos): modelo vía Ollama (auto-detectado en :11434).
+# ⚠️ LIMITACIÓN CONOCIDA: OpenFang v0.6.9 entra en bucle "##" con gemma3 y qwen2.5
+# dentro de su agent-loop (los modelos funcionan bien directo en Ollama). El único
+# modelo local que responde completo en el loop es llama3.2:3b (calidad limitada).
+# Para 100% GPU usar el Modelfile.gemma3-gpu (uso directo) o llama3.2:3b.
+# [default_model]
+# provider = "ollama"
+# model = "llama3.2:3b"          # local + parseable por OpenFang (3B, calidad limitada)
+
+# Opción nube alternativa: Groq (tier gratuito con rate limits).
+# [default_model]
+# provider = "groq"
+# model = "llama-3.3-70b-versatile"
+# api_key_env = "GROQ_API_KEY"
+
+# ── Memoria ────────────────────────────────────────────────────────────────────
+[memory]
+decay_rate = 0.05              # decaimiento lento — el conocimiento corporativo es estable
+
+# ── Compactación automática del contexto (sesiones largas en canales) ───────────
+[compaction]
+threshold = 80                # compactar al superar 80 mensajes
+keep_recent = 20
+max_summary_tokens = 1024
+
+# ── Canal Telegram ─────────────────────────────────────────────────────────────
+# El token se lee de la variable de entorno TELEGRAM_BOT_TOKEN (ver .env.example).
+# Crear el bot con @BotFather. Dejar allowed_users vacío para pruebas.
+[telegram]
+bot_token_env = "TELEGRAM_BOT_TOKEN"
+allowed_users = []
+
+# ── (Opcional) Servidor MCP para exponer/consumir herramientas externas ─────────
+# [[mcp_servers]]
+# name = "filesystem"
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-filesystem", "."]
