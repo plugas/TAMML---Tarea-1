@@ -1,5 +1,11 @@
 # `openfang/` — Módulo 3: Agente corporativo sobre OpenFang Agent OS (Ruta B)
 
+![OpenFang](https://img.shields.io/badge/OpenFang-Agent%20OS%20v0.6.9-FF6B35)
+![Rust](https://img.shields.io/badge/Rust-runtime-000000?logo=rust&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?logo=openai&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-local%20LLM-000000?logo=ollama&logoColor=white)
+![Telegram](https://img.shields.io/badge/Telegram-@RioPaila__Bot-26A5E4?logo=telegram&logoColor=white)
+
 Manifiestos (`.toml`) que definen el sistema **multi-agente** de Riopaila Castilla sobre **[OpenFang](https://github.com/RightNow-AI/openfang)**, un *Agent OS* escrito en **Rust** (MIT/Apache-2.0). El kernel corre como daemon en `127.0.0.1:4200` y expone una API **compatible con OpenAI**.
 
 > Esta carpeta es la **fuente versionada** de la configuración. Los agentes se despliegan copiando/registrando estos manifiestos en el runtime (`~/.openfang/`). El binario y el estado del daemon viven fuera del repo.
@@ -50,4 +56,4 @@ make openfang-telegram  # puente Telegram (@RioPaila_Bot)
 
 Configuración previa: copiar `config.toml.example` → `~/.openfang/config.toml` y exportar `OPENAI_API_KEY` + `TELEGRAM_BOT_TOKEN`.
 
-> Guía reproducible: [`docs/runbook-openfang.md`](../docs/runbook-openfang.md). Guía de entrega y rúbrica: [`docs/ENTREGA-3.md`](../docs/ENTREGA-3.md).
+> Guía reproducible: [`docs/runbook-openfang.md`](../docs/runbook-openfang.md). Documentación técnica de entrega: [`docs/entrega-modulo3-openfang.md`](../docs/entrega-modulo3-openfang.md).

@@ -1,5 +1,12 @@
 # `src/riopaila_rag/` — Núcleo del agente RAG
 
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?logo=openai&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-orchestration-1C3C3C?logo=langchain&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-ReAct%20agent-1C3C3C)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20pgvector-3FCF8E?logo=supabase&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
+![LangSmith](https://img.shields.io/badge/LangSmith-tracing-1C3C3C?logo=langchain&logoColor=white)
+
 Este paquete contiene **todo** el código del Módulo 2: agente, tools, memoria, ingestión y la interfaz Streamlit. También conserva el motor legado del Módulo 1 (`kb.py`).
 
 ## Archivos del paquete

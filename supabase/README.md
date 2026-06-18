@@ -1,5 +1,9 @@
 # `supabase/` — Esquema y datos del Módulo 2 (RAG)
 
+![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?logo=supabase&logoColor=white)
+![pgvector](https://img.shields.io/badge/pgvector-1536d-4169E1?logo=postgresql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-migrations-336791?logo=postgresql&logoColor=white)
+
 Define el backend de datos del agente RAG: un Postgres gestionado por **Supabase** con la extensión **`pgvector`** para búsqueda semántica.
 
 ## Contenido

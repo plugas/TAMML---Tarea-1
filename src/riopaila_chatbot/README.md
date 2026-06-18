@@ -1,5 +1,10 @@
 # `src/riopaila_chatbot/` — Módulo 1: Scrapers de la base de conocimiento
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![Selenium](https://img.shields.io/badge/Selenium-scraping-43B02A?logo=selenium&logoColor=white)
+![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-parsing-4B8BBE)
+![Groq](https://img.shields.io/badge/Groq-Qwen3--32B-F55036?logo=groq&logoColor=white)
+
 Paquete legado del **Módulo 1**. Contiene los scrapers que construyen el corpus de conocimiento de Riopaila Castilla a partir de fuentes públicas. La salida cruda (`reports/*.md`) se consolida después con `src/scripts/merge_reports.py` y `clean_context.py` en `data/knowledge/riopaila_castilla_clean.md`.
 
 ## Scrapers (`scrapers/`)

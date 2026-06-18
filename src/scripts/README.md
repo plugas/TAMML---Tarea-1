@@ -1,5 +1,10 @@
 # `src/scripts/` — Scripts de pipeline (ETL)
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![pymupdf4llm](https://img.shields.io/badge/pymupdf4llm-PDF%20→%20Markdown-E94E1B)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-t--SNE%20%2B%20KMeans-F7931E?logo=scikit-learn&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-embeddings-412991?logo=openai&logoColor=white)
+
 Scripts independientes que se ejecutan vía `make` para preparar el corpus de datos antes de la ingestión al agente. Hay dos generaciones de scripts:
 
 - **Módulo 1 (legado)**: `merge_reports.py`, `clean_context.py` — preparan el archivo Markdown consolidado que consumen las pestañas Resumen / FAQ / Q&A.

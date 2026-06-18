@@ -26,6 +26,8 @@ Thumbs.db
 agents/
 # lock de skills de Claude Code
 skills-lock.json
+# Guiones de sustentación (apoyo personal, no parte del proyecto técnico)
+docs/GUION_*.md
 
 # PDFs binarios originales (los .md convertidos en data/knowledge/pdfs/ SI se versionan)
 data/pdfs/

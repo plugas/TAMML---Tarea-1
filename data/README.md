@@ -1,5 +1,9 @@
 # `data/` — Corpus y salidas de análisis
 
+![Markdown](https://img.shields.io/badge/Markdown-corpus-000000?logo=markdown&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-t--SNE-F7931E?logo=scikit-learn&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-embeddings-412991?logo=openai&logoColor=white)
+
 | Carpeta | Contenido | Módulo |
 |---|---|---|
 | `knowledge/riopaila_castilla.md` | Consolidación directa del scraping (web + redes + SIMEV). | 1 |

@@ -1,5 +1,9 @@
 # `src/riopaila_rag/tools/` — Herramientas del agente
 
+![LangChain](https://img.shields.io/badge/LangChain-tools-1C3C3C?logo=langchain&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-text--embedding--3--small-412991?logo=openai&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-pgvector-3FCF8E?logo=supabase&logoColor=white)
+
 Cada archivo expone una **tool LangChain** decorada con `@tool` que el agente ReAct invoca autónomamente. Las descripciones de cada tool están escritas para guiar al modelo en su decisión de cuándo usarlas.
 
 ## Archivos
