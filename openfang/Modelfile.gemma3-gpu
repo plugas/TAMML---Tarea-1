@@ -1,0 +1,16 @@
+# Modelfile — gemma3:4b optimizado para correr 100% en GPU (RTX 3050, 4 GB VRAM).
+# Crear con:  ollama create gemma3-riopaila -f openfang/Modelfile.gemma3-gpu
+# Verificar:  ollama ps   (columna PROCESSOR debe decir "100% GPU")
+
+FROM gemma3:4b
+
+# num_gpu 99 = descarga TODAS las capas del modelo a la GPU (sin reparto con CPU).
+PARAMETER num_gpu 99
+
+# Ventana de contexto. 4096 cabe junto al modelo si hay VRAM libre suficiente.
+# Si ollama ps muestra reparto CPU/GPU, baja este valor a 2048 o libera más VRAM.
+PARAMETER num_ctx 4096
+
+# Respuestas casi deterministas (coherente con el agente del Módulo 2).
+PARAMETER temperature 0.1
+PARAMETER top_p 0.9

@@ -20,7 +20,17 @@ Thumbs.db
 .vscode/
 .idea/
 
-.claude
-docs
+# Artefactos de Claude Code / tooling (no son parte del proyecto)
+.claude/
+# definiciones de agentes de Claude Code (FleetView)
+agents/
+# lock de skills de Claude Code
+skills-lock.json
+# Guiones de sustentación (apoyo personal, no parte del proyecto técnico)
+docs/GUION_*.md
 
-src/riopaila_rag/config.py
+# PDFs binarios originales (los .md convertidos en data/knowledge/pdfs/ SI se versionan)
+data/pdfs/
+
+# NOTA: docs/ y src/riopaila_rag/config.py SÍ se versionan (documentación de
+# entrega y configuración sin secretos — todas las claves se leen del .env).

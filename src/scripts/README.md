@@ -1,5 +1,10 @@
 # `src/scripts/` — Scripts de pipeline (ETL)
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![pymupdf4llm](https://img.shields.io/badge/pymupdf4llm-PDF%20→%20Markdown-E94E1B)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-t--SNE%20%2B%20KMeans-F7931E?logo=scikit-learn&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-embeddings-412991?logo=openai&logoColor=white)
+
 Scripts independientes que se ejecutan vía `make` para preparar el corpus de datos antes de la ingestión al agente. Hay dos generaciones de scripts:
 
 - **Módulo 1 (legado)**: `merge_reports.py`, `clean_context.py` — preparan el archivo Markdown consolidado que consumen las pestañas Resumen / FAQ / Q&A.
@@ -48,6 +53,16 @@ Lee `reporte_web_riopaila.md`, `reporte_linkedin_posts_riopaila.md`, `reporte_in
 Limpia el archivo consolidado y produce `data/knowledge/riopaila_castilla_clean.md`, que es el archivo que **realmente** consume el motor del Módulo 1 (Resumen / FAQ / Q&A) **y** también consume el ingest del Módulo 2 como una de las 26 fuentes.
 
 Aplica filtros como deduplicación de líneas, normalización de espacios y eliminación de ruido de scraping.
+
+### Scripts del Módulo 3 (OpenFang) y Ruta B
+
+| Script | Comando | Qué hace |
+|---|---|---|
+| `seed_openfang_kv.py` | `make openfang-kv` | Carga los datos estructurados de `company_info.sql` al **KV Store** del agente OpenFang (`openfang memory set`). Solo stdlib + binario `openfang`. |
+| `ingest_openfang.py` | `make openfang-ingest` | Ingesta los documentos a la **memoria semántica** del agente vía la API OpenAI-compatible del OS (`:4200`). Solo stdlib (`urllib`). |
+| `telegram_bridge.py` | `make openfang-telegram` | Puente Telegram ↔ agente: long-polling `getUpdates` → `POST /v1/chat/completions` (`openfang:riopaila-coordinador`) → `sendMessage`. Sortea el bug 404 del canal nativo de v0.6.9. Solo stdlib. |
+| `seed_interactions.py` | `make tsne-seed` | [Ruta B] Siembra 48 preguntas (8 intenciones × 6 formulaciones) en el historial de `riopaila-faq` y guarda `data/analysis/intent_labels.json`. |
+| `tsne_analysis.py` | `make tsne` | [Ruta B] Extrae el historial JSONL de OpenFang, embedde, reduce con **t-SNE + KMeans** y genera `data/analysis/tsne_intenciones.png` + interpretación de clústeres. Requiere `uv sync --extra analysis`. |
 
 ## Orden de ejecución completo (desde cero)
 

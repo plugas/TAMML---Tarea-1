@@ -713,12 +713,12 @@ Comportamiento: tu conocimiento para esta respuesta es únicamente la INFORMACI�
 REGLAS DE CONTENIDO:
 - Usa solo lo que conste en esa información. No cites fuentes externas que no aparezcan ahí.
 - Si algo no consta, dilo en una frase breve y natural; no rellenes con suposiciones.
-- Usa siempre la marca **Riopaila Castillo** (no "Castilla"), salvo en URLs literales copiadas de la información de referencia.
+- Usa siempre la marca **Riopaila Castilla** (nombre oficial de la empresa), salvo en URLs literales copiadas de la información de referencia.
 
 REDACCIÓN PARA EL USUARIO (obligatorio):
 - Escribe como canal de información de la empresa: **no uses** las palabras «CONTEXTO», «contexto proporcionado», «texto proporcionado», «material adjunto», ni expliques que tus datos vienen de un documento o de un fragmento limitado.
 - **No recomiendes** el Registro Nacional de Valores (RNVE), «emisores», organismos de supervisión ni páginas genéricas como “salida” cuando la pregunta es contacto o información práctica, salvo que la información de referencia mencione explícitamente ese tema de forma pertinente.
-- Si preguntan cómo contactar: prioriza teléfonos, correos, WhatsApp, enlaces y direcciones que **sí** aparezcan; si solo hay datos parciales (p. ej. un correo de un área), ofrécelos primero. Si no hay ningún dato concreto, una sola frase neutra del tipo «No tenemos aquí ese dato de contacto consolidado» y, si quieres, invita en **una frase** a usar los canales públicos de Riopaila Castillo **sin** listar organismos regulatorios.
+- Si preguntan cómo contactar: prioriza teléfonos, correos, WhatsApp, enlaces y direcciones que **sí** aparezcan; si solo hay datos parciales (p. ej. un correo de un área), ofrécelos primero. Si no hay ningún dato concreto, una sola frase neutra del tipo «No tenemos aquí ese dato de contacto consolidado» y, si quieres, invita en **una frase** a usar los canales públicos de Riopaila Castilla **sin** listar organismos regulatorios.
 - Si la pregunta **no** es sobre contacto (teléfono, correo, dirección, sedes, «cómo ubicarlos», «medios de comunicación»): **no** respondas con listados de teléfonos, correos ni direcciones aunque salgan en la información de referencia; céntrate **solo** en lo que se preguntó (productos, líneas de negocio, propósito, historia, etc.).
 - Si preguntan historia u origen, prioriza fechas, fundación e hitos que figuren en la información de referencia.
 - Tono profesional y corporativo. No menciones que eres un modelo de lenguaje ni describas tu proceso interno.
@@ -727,7 +727,7 @@ REDACCIÓN PARA EL USUARIO (obligatorio):
 
 def cadena_resumen():
     tpl = (
-        "Eres el asistente corporativo de Riopaila Castillo.\n"
+        "Eres el asistente corporativo de Riopaila Castilla.\n"
         f"{_PROMPT_REGLAS}\n"
         "TAREA: Redacta un RESUMEN EJECUTIVO (3 a 5 párrafos breves) sobre la empresa: "
         "quiénes son, qué hacen, historia relevante y líneas de negocio que aparezcan en la información de referencia.\n\n"
@@ -739,7 +739,7 @@ def cadena_resumen():
 
 def cadena_faq():
     tpl = (
-        "Eres el asistente corporativo de Riopaila Castillo.\n"
+        "Eres el asistente corporativo de Riopaila Castilla.\n"
         f"{_PROMPT_REGLAS}\n"
         "TAREA: Responde la PREGUNTA de forma directa y útil para un visitante (estilo FAQ).\n"
         "- Si la pregunta es específica (p. ej. proveedores o aliados, empleo, energía, informes), "
@@ -769,7 +769,7 @@ PRIORIDAD (esta respuesta):
 
 def cadena_qa_libre():
     tpl = (
-        "Eres el Asistente experto de Riopaila Castillo.\n"
+        "Eres el Asistente experto de Riopaila Castilla.\n"
         f"{_PROMPT_REGLAS}\n"
         "Si la pregunta **sí** pide cómo contactar y en la información aparecen teléfonos o correos, inclúyelos tal cual.\n"
         "Si la pregunta **no** pide contacto, ignora bloques de teléfonos/correos en la información salvo que sean imprescindibles para responder el tema.\n\n"
@@ -782,7 +782,7 @@ def cadena_qa_libre():
 
 def cadena_qa_solo_contenido_operativo():
     tpl = (
-        "Eres el Asistente experto de Riopaila Castillo.\n"
+        "Eres el Asistente experto de Riopaila Castilla.\n"
         f"{_PROMPT_REGLAS}\n"
         f"{_PROMPT_SOLO_CONTENIDO_OPERATIVO}\n\n"
         "INFORMACIÓN DE REFERENCIA:\n{contexto}\n\n"
@@ -796,13 +796,13 @@ _URL_SPLIT_RX = re.compile(r"(https?://[^\s\)\]>]+)")
 
 
 def _normalizar_marca_respuesta(texto: str) -> str:
-    """Unifica 'Riopaila Castilla' → 'Riopaila Castillo' en texto visible; no altera URLs."""
+    """Corrige 'Riopaila Castillo' → 'Riopaila Castilla' en texto visible; no altera URLs."""
     if not texto.strip():
         return texto
 
     def _repl(m: re.Match[str]) -> str:
         raw = m.group(0)
-        return "RIOPAILA CASTILLO" if raw.isupper() else "Riopaila Castillo"
+        return "RIOPAILA CASTILLA" if raw.isupper() else "Riopaila Castilla"
 
     partes = _URL_SPLIT_RX.split(texto)
     out: list[str] = []
@@ -810,7 +810,7 @@ def _normalizar_marca_respuesta(texto: str) -> str:
         if i % 2 == 1:
             out.append(parte)
             continue
-        s = re.sub(r"\bRiopaila\s+Castilla\b", _repl, parte, flags=re.IGNORECASE)
+        s = re.sub(r"\bRiopaila\s+Castillo\b", _repl, parte, flags=re.IGNORECASE)
         out.append(s)
     return "".join(out)
 
@@ -969,7 +969,7 @@ def invocar_qa(pregunta: str, *, texto_retrieval: str | None = None, solo_conten
 
 
 _PREG_PROPOSITO_TARJETA_RESUMEN = """\
-Resume en 2 a 4 frases el propósito o compromiso de Riopaila Castillo con productos de calidad, medio ambiente y comunidades, \
+Resume en 2 a 4 frases el propósito o compromiso de Riopaila Castilla con productos de calidad, medio ambiente y comunidades, \
 según únicamente lo que conste en la información de referencia que el sistema recuperará. Si no hay detalle suficiente, dilo en una frase breve.
 """
 
@@ -993,19 +993,19 @@ _TOKEN_BURST_CIERRE_RESUMEN = (
 _LINEA_NEGOCIO_PREGUNTA: dict[str, str] = {
     "azucar": (
         "¿Qué menciona la información sobre azúcar de caña, azúcar crudo o refinada, y la cadena agroindustrial del azúcar "
-        "en Riopaila Castillo? Organiza la respuesta en viñetas cortas usando únicamente lo sustentado en la información de referencia."
+        "en Riopaila Castilla? Organiza la respuesta en viñetas cortas usando únicamente lo sustentado en la información de referencia."
     ),
     "energia": (
-        "¿Qué dice la información sobre energía renovable, cogeneración, bagazo, biomasa o generación eléctrica en Riopaila Castillo? "
+        "¿Qué dice la información sobre energía renovable, cogeneración, bagazo, biomasa o generación eléctrica en Riopaila Castilla? "
         "Viñetas cortas; únicamente lo sustentado en la información de referencia."
     ),
     "biocombustibles": (
-        "¿Qué aparece sobre biocombustibles, etanol o esquema caña–azúcar vinculado a Riopaila Castillo? "
+        "¿Qué aparece sobre biocombustibles, etanol o esquema caña–azúcar vinculado a Riopaila Castilla? "
         "Respuesta breve basada exclusivamente en la información de referencia."
     ),
     "derivados": (
         "¿Qué derivados o coproductos de la caña o la molienda (melaza, alcohol, subproductos, etc.) menciona la información "
-        "respecto a Riopaila Castillo? Viñetas; solo hechos presentes en la información de referencia."
+        "respecto a Riopaila Castilla? Viñetas; solo hechos presentes en la información de referencia."
     ),
 }
 

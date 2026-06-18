@@ -1,0 +1,127 @@
+id = "riopaila-inteligencia"
+name = "Riopaila Inteligencia Hand"
+description = "Monitor autónomo de inteligencia sectorial para Riopaila Castilla — vigila el sector azucarero, biocombustibles y agroindustria del Valle del Cauca, clasifica hallazgos y genera reportes programados."
+category = "data"
+icon = "\U0001F33E"
+tools = ["web_search", "web_fetch", "memory_store", "memory_recall", "schedule_create", "schedule_list", "file_write", "event_publish"]
+
+[[settings]]
+key = "target_subject"
+label = "Sujeto de monitoreo"
+description = "Qué vigilar (empresa, sector, tema regulatorio)"
+setting_type = "text"
+default = "Riopaila Castilla y el sector azucarero colombiano"
+
+[[settings]]
+key = "update_frequency"
+label = "Frecuencia de actualización"
+description = "Cada cuánto ejecutar la recolección"
+setting_type = "select"
+default = "daily"
+
+[[settings.options]]
+value = "daily"
+label = "Diario (7:00 AM, días hábiles)"
+
+[[settings.options]]
+value = "every_6h"
+label = "Cada 6 horas"
+
+[[settings.options]]
+value = "weekly"
+label = "Semanal"
+
+[[settings]]
+key = "focus_area"
+label = "Área de enfoque"
+description = "Lente de análisis de la inteligencia recolectada"
+setting_type = "select"
+default = "sector"
+
+[[settings.options]]
+value = "sector"
+label = "Sector azucarero / agroindustria"
+
+[[settings.options]]
+value = "regulatorio"
+label = "Regulatorio (SFC, gremios)"
+
+[[settings.options]]
+value = "competidores"
+label = "Competidores (otros ingenios)"
+
+[[settings]]
+key = "report_format"
+label = "Formato de reporte"
+description = "Formato de salida del reporte de inteligencia"
+setting_type = "select"
+default = "markdown"
+
+[[settings.options]]
+value = "markdown"
+label = "Markdown"
+
+[[settings.options]]
+value = "json"
+label = "JSON"
+
+[agent]
+name = "riopaila-inteligencia-hand"
+description = "Agente autónomo de inteligencia sectorial para Riopaila Castilla S.A."
+module = "builtin:chat"
+provider = "default"
+model = "default"
+max_tokens = 8192
+temperature = 0.2
+max_iterations = 40
+system_prompt = """Eres el Hand de Inteligencia Sectorial de Riopaila Castilla S.A., una empresa agroindustrial colombiana del Valle del Cauca (azúcar, alcohol carburante, cogeneración, miel, aceite de palma).
+
+Operas de forma autónoma y programada, en varias fases. Tu objetivo es vigilar el entorno de la empresa y entregar reportes ejecutivos accionables, en español formal, sin alucinaciones y siempre con fuentes.
+
+FASE 1 — RECOLECCIÓN (web_search / web_fetch):
+Busca noticias y novedades recientes (últimas 24-72 horas) sobre:
+1. Sector azucarero colombiano y precios internacionales del azúcar.
+2. Alcohol carburante / biocombustibles / etanol en Colombia.
+3. Riopaila Castilla S.A. — menciones, comunicados, hechos relevantes a la SFC.
+4. Valle del Cauca — regulación o eventos que afecten la agroindustria de la caña.
+Procesa como máximo las fuentes configuradas. Verifica que la información sea reciente y proceda de fuentes confiables (ASOCAÑA, FEDEBIOCOMBUSTIBLES, SFC, BVC, medios económicos).
+
+FASE 2 — ANÁLISIS:
+Para cada hallazgo:
+- Clasifícalo como OPORTUNIDAD, RIESGO o NEUTRAL para Riopaila Castilla.
+- Asigna una relevancia de 1 a 10.
+- Redacta 1-2 frases de análisis del impacto potencial.
+Descarta lo irrelevante o no verificable.
+
+FASE 3 — REPORTE:
+Genera un reporte ejecutivo con:
+- Resumen ejecutivo (máx. 3 viñetas).
+- Hallazgos ordenados por relevancia (con su clasificación y fuente/URL).
+- Una recomendación de acción para el equipo directivo.
+Guarda el reporte (file_write) y, si la configuración lo indica, publica un evento (event_publish) y/o envíalo al canal configurado.
+
+FASE 4 — PERSISTENCIA:
+Guarda en memoria (memory_store) un resumen del ciclo y la fecha, para detectar cambios respecto al ciclo anterior en la próxima ejecución.
+
+GUARDRAILS:
+- Nunca inventes cifras ni fuentes. Si no encuentras información confiable, dilo explícitamente.
+- Todo hallazgo debe tener una fuente verificable (URL).
+- Salidas siempre en español formal.
+"""
+
+[dashboard]
+
+[[dashboard.metrics]]
+label = "Hallazgos recolectados"
+memory_key = "riopaila_inteligencia_hallazgos"
+format = "number"
+
+[[dashboard.metrics]]
+label = "Reportes generados"
+memory_key = "riopaila_inteligencia_reportes"
+format = "number"
+
+[[dashboard.metrics]]
+label = "Última actualización"
+memory_key = "riopaila_inteligencia_ultima_actualizacion"
+format = "text"

@@ -1,5 +1,12 @@
 # `src/riopaila_rag/` — Núcleo del agente RAG
 
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?logo=openai&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-orchestration-1C3C3C?logo=langchain&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-ReAct%20agent-1C3C3C)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20pgvector-3FCF8E?logo=supabase&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
+![LangSmith](https://img.shields.io/badge/LangSmith-tracing-1C3C3C?logo=langchain&logoColor=white)
+
 Este paquete contiene **todo** el código del Módulo 2: agente, tools, memoria, ingestión y la interfaz Streamlit. También conserva el motor legado del Módulo 1 (`kb.py`).
 
 ## Archivos del paquete
@@ -23,7 +30,7 @@ Lee todas las variables de entorno con `python-dotenv` y las expone como constan
 | `SUPABASE_URL` | — | URL del proyecto |
 | `SUPABASE_KEY` | — | Anon key |
 | `CHUNK_SIZE` | `1200` | Tamaño máximo del chunk en chars (overlap = 20%) |
-| `RAG_TOP_K` | `5` | N fragmentos a retornar en cada búsqueda |
+| `RAG_TOP_K` | `12` | N fragmentos a retornar en cada búsqueda |
 | `LANGSMITH_API_KEY` | — | Tracing (opcional) |
 | `GROQ_API_KEY` | — | Legacy módulo 1 |
 
@@ -93,7 +100,7 @@ El agente es **singleton lazy**: se construye en la primera llamada y se reusa.
 ### `app.py`
 **Interfaz Streamlit** completa con 5 pestañas:
 
-- **Inicio, Resumen, FAQ, Q&A** → Módulo 1 (Groq Llama).
+- **Inicio, Resumen, FAQ, Q&A** → Módulo 1 (Groq `Qwen3-32B`).
 - **Agente** → Módulo 2 (calco visual de Q&A con motor RAG ReAct).
 
 Detalles del Agente:
@@ -102,6 +109,9 @@ Detalles del Agente:
 - Columna derecha: transcript del chat + sugerencias + input + Enter o botón **Enviar**.
 - Streaming: spinner durante la generación; respuesta completa al terminar dentro de la burbuja del bot.
 - Persistencia: cada sesión tiene un `session_id` único guardado en Supabase.
+
+### `agent_chat_pdf.py`
+Exporta el historial del Agente a **PDF** (`fpdf2`) con diseño institucional: cabecera con logo, tarjetas con franja de color por rol (pregunta/respuesta) y limpieza del texto (quita citas RAG y tablas crudas del modelo). Función pública `build_agent_chat_pdf_bytes(historial) -> bytes`, usada por el botón "Descargar PDF" de `app.py`.
 
 ### `kb.py` (legado Módulo 1)
 Base de conocimiento por **recuperación léxica** (sin embeddings). Lee `riopaila_castilla_clean.md` y selecciona fragmentos por coincidencia de palabras clave. Usa Groq + LangChain. Consumido por las pestañas Resumen, FAQ y Q&A.

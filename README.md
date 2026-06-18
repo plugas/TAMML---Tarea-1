@@ -1,233 +1,101 @@
-# TAMML --- Tarea 1
-## Creación de la Base de Conocimiento Semántico y Sistema Q&A (Preguntas y Respuestas)
+# Asistente Virtual Corporativo — Riopaila Castilla S.A.
 
-> **Estado actual:** el proyecto evolucionó del Módulo 1 (Q&A con context stuffing) al **Módulo 2 (Agente conversacional con RAG + tools + memoria persistente)**. Ambos módulos conviven en la misma aplicación Streamlit. Las secciones inferiores describen primero el Módulo 1 (legado) y al final el Módulo 2 (lo más reciente).
+> Proyecto **TAMML** (Taller de Aplicaciones con Modelos de Machine Learning).
+> Asistente conversacional para la empresa agroindustrial **Riopaila Castilla S.A.** (Valle del Cauca, Colombia), construido de forma incremental en **tres módulos** que conviven en el mismo repositorio.
 
----
+<!-- ─────────────────────────── Stack tecnológico ─────────────────────────── -->
 
-## Descripción del proyecto
+#### Núcleo
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![uv](https://img.shields.io/badge/uv-package%20manager-DE5FE9?logo=astral&logoColor=white)
+![Make](https://img.shields.io/badge/Makefile-automation-A42E2B?logo=gnu&logoColor=white)
+![License](https://img.shields.io/badge/license-academic-blue)
 
-Este proyecto corresponde al **Módulo 1** de la asignatura, cuyo objetivo es construir la base de conocimiento de un sistema de preguntas y respuestas (Q&A) para la empresa **Riopaila Castilla**.
+#### Módulo 1 — Q&A (context stuffing)
+![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-orchestration-1C3C3C?logo=langchain&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-Qwen3--32B-F55036?logo=groq&logoColor=white)
+![Selenium](https://img.shields.io/badge/Selenium-scraping-43B02A?logo=selenium&logoColor=white)
+![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-parsing-4B8BBE)
 
-El sistema simula un **asistente virtual corporativo**, capaz de responder preguntas de usuarios sobre información pública de la empresa, utilizando técnicas de **Prompt Engineering con modelos de lenguaje (LLMs)**, sin implementar RAG en esta etapa.
+#### Módulo 2 — Agente RAG
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?logo=openai&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-ReAct%20agent-1C3C3C?logo=langgraph&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?logo=supabase&logoColor=white)
+![pgvector](https://img.shields.io/badge/pgvector-1536d-4169E1?logo=postgresql&logoColor=white)
+![LangSmith](https://img.shields.io/badge/LangSmith-tracing-1C3C3C?logo=langchain&logoColor=white)
 
----
+#### Módulo 3 — Agent OS (Ruta B)
+![OpenFang](https://img.shields.io/badge/OpenFang-Agent%20OS%20v0.6.9-FF6B35)
+![Rust](https://img.shields.io/badge/Rust-runtime-000000?logo=rust&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-local%20LLM-000000?logo=ollama&logoColor=white)
+![Telegram](https://img.shields.io/badge/Telegram-@RioPaila__Bot-26A5E4?logo=telegram&logoColor=white)
 
-## Objetivo
-
-Diseñar y construir el núcleo de conocimiento de un chatbot empresarial, capaz de responder preguntas como:
-
-- Productos y servicios
-- Historia de la empresa
-- Sostenibilidad y medio ambiente
-- Estructura organizacional
-- Información institucional general
-
----
-
-## Arquitectura del sistema
-
-El sistema fue desarrollado bajo una arquitectura basada en **context stuffing (sin RAG)**:
-
-- **Modelo LLM:** Qwen/Qwen3-32B  
-- **Proveedor:** ChatGroq API  
-- **Framework de orquestación:** LangChain  
-- **Interfaz de usuario:** Gradio  
-- **Estrategia de conocimiento:** Prompt Engineering con contexto completo  
-
-El conocimiento de la empresa fue previamente extraído mediante web scraping, limpiado y consolidado en un único archivo Markdown que actúa como **memoria del sistema**.
-
----
-
-## Funcionalidades
-
-El sistema permite:
-
-- Responder preguntas en lenguaje natural  
-- Consultar información institucional de la empresa  
-- Generar respuestas basadas únicamente en el contexto suministrado  
-- Interacción en tiempo real mediante interfaz web  
-- Validación de coherencia en más de 20 preguntas de prueba  
+#### Ruta Transversal B — Análisis de datos
+![scikit-learn](https://img.shields.io/badge/scikit--learn-t--SNE%20%2B%20KMeans-F7931E?logo=scikit-learn&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-vectores-013243?logo=numpy&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-plots-11557C?logo=python&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-notebook-F37626?logo=jupyter&logoColor=white)
 
 ---
 
-## Interfaz de usuario
+## Integrantes
 
-Se implementó una interfaz web utilizando **Gradio**, que permite:
-
-- Ingresar preguntas desde un campo de texto  
-- Obtener respuestas generadas por el modelo en tiempo real  
-- Realizar pruebas iterativas del sistema Q&A  
-
----
-
-## Base de conocimiento
-
-El sistema se alimenta de un corpus construido a partir de:
-
-- Web scraping del sitio oficial de Riopaila Castilla  
-- Extracción de posts de LinkedIn e Instagram  
-- Descarga y lectura de documentos PDF del portal SIMEV (Superfinanciera)  
-- Limpieza y normalización del texto  
-- Consolidación en un único archivo de contexto en formato **Markdown** (`.md`)
+| Nombre | Código |
+|---|---|
+| Nelcy Lucia Zapata Gil | 22502267 |
+| Valentina Isaza Ospina | 22502266 |
+| Oscar Fernando Pulgarin | 22500224 |
+| Juan Andres Lopez | 2226490 |
 
 ---
 
-## Evaluación del sistema
+## Problema y solución
 
-Se realizaron pruebas con **más de 20 preguntas**, evaluando:
+**Riopaila Castilla S.A.** es una empresa agroindustrial con más de un siglo de operación (azúcar, alcohol carburante, cogeneración de energía con bagazo, mieles, aceite de palma). Su información pública está dispersa en el sitio web, redes sociales, informes a la Superintendencia Financiera (SFC/SIMEV) y documentos de gobierno corporativo. Un usuario (empleado, proveedor, accionista o público general) no tiene un canal único para resolver dudas sobre la compañía.
 
-- Precisión de respuestas  
-- Coherencia con el contexto  
-- Cobertura de temas empresariales  
-- Comportamiento frente a preguntas fuera del dominio  
+**Solución:** un asistente virtual corporativo que centraliza ese conocimiento y responde en lenguaje natural, **sin alucinaciones**, citando siempre la fuente. El proyecto recorre tres arquitecturas, de la más simple a la más avanzada.
 
 ---
 
-## Limitaciones
+## Evolución en tres módulos
 
-- No implementa arquitectura RAG (limitación del diseño del módulo)  
-- Dependencia del tamaño de ventana de contexto del LLM  
-- Escalabilidad limitada por uso de context stuffing  
-- Posibles omisiones si la información no está en el texto base  
-- Dependencia de servicios externos (Groq API)
+| Aspecto | **Módulo 1** — Q&A | **Módulo 2** — Agente RAG | **Módulo 3** — Agent OS (OpenFang) |
+|---|---|---|---|
+| Recuperación | Léxica (palabras clave) | Semántica (embeddings + pgvector) | Memoria de 6 capas (Vector + KV Store) del OS |
+| Decisión de tool | Hardcoded | El agente decide (ReAct) | Router multi-agente (`agent_send`) |
+| Memoria | Sesión navegador | Persistente (Supabase) | Sesiones canónicas multicanal del OS |
+| Modelo | Groq `Qwen3-32B` | OpenAI `gpt-4o-mini` | `gpt-4o-mini` (+ ruta local Ollama 100% GPU) |
+| Canal | Streamlit | Streamlit | **Telegram** (`@RioPaila_Bot`) |
+| Autonomía | Reactivo | Reactivo | **Hand autónomo programado** |
+| Observabilidad | — | LangSmith | Dashboard OpenFang `:4200` + JSONL |
 
----
-
-## Tecnologías utilizadas
-
-- Python  
-- uv (gestión de entorno y dependencias)  
-- LangChain  
-- Gradio  
-- ChatGroq API  
-- Qwen3-32B  
-- Selenium & BeautifulSoup (Web Scraping)  
-- pdfplumber (lectura de PDFs)  
-- Makefile (automatización de tareas)
+Los tres módulos conviven: la app Streamlit expone los Módulos 1 y 2; el Módulo 3 corre como un sistema operativo agéntico independiente sobre OpenFang.
 
 ---
 
-## Trabajo futuro
+# Módulo 1 — Q&A con Prompt Engineering (context stuffing)
 
-Evolución del sistema hacia una arquitectura más escalable:
+Punto de partida: un sistema de preguntas y respuestas **sin RAG**. Todo el conocimiento de la empresa se inyecta en el prompt del sistema en cada consulta (*context stuffing*).
 
-- Implementación de embeddings semánticos  
-- Uso de bases vectoriales (FAISS / ChromaDB)  
-- Migración a arquitectura RAG  
-- Optimización del chunking semántico  
-- Reducción del tamaño del prompt y mejora de eficiencia  
+- **Modelo:** `Qwen/Qwen3-32B` vía **Groq API** (baja latencia, aceleradores LPU).
+- **Framework:** LangChain. **Interfaz:** Streamlit (pestañas *Resumen*, *FAQ*, *Q&A*).
+- **Conocimiento:** `data/knowledge/riopaila_castilla_clean.md` (~180 KB), recuperación **léxica** por solape de palabras clave y bigramas (ver `kb.py`).
 
----
+### Pipeline de datos (scraping)
 
-## Autores
+1. Web scraping del sitio oficial (Selenium + BeautifulSoup).
+2. Extracción de Instagram y LinkedIn.
+3. Scraping de SIMEV (Superfinanciera) y descarga de PDFs regulatorios.
+4. Consolidación (`merge_reports.py`) → limpieza (`clean_context.py`) → `riopaila_castilla_clean.md`.
 
-- Nelcy Lucia Zapata Gil – 22502267
-- Valentina Isaza Ospina - 22502266
-- Oscar Fernando Pulgarin – 22500224
-- Juan Andres Lopez - 2226490
+> Implementación en `src/riopaila_chatbot/scrapers/` y `src/scripts/`. La lógica Q&A está en `src/riopaila_rag/kb.py`.
 
----
-
-## Apartado técnico
-
-### Gestión del entorno con uv
-
-El proyecto utiliza [uv](https://github.com/astral-sh/uv) como gestor de entorno virtual y dependencias, reemplazando el flujo tradicional de `pip` + `venv`. Todas las dependencias están declaradas en `pyproject.toml` y el entorno se reproduce de forma exacta mediante `uv.lock`.
-
-Para instalar el entorno desde cero:
-
-```bash
-uv sync
-```
-
-### Automatización con Makefile
-
-Las tareas del proyecto se ejecutan mediante `make`, evitando tener que recordar comandos largos. Los comandos disponibles son:
-
-| Comando | Descripción |
-|---------|-------------|
-| `make app` | Lanza la interfaz Gradio del chatbot |
-| `make scrape-web` | Extrae contenido del sitio web de Riopaila |
-| `make scrape-linkedin` | Extrae posts de LinkedIn |
-| `make scrape-instagram` | Extrae posts de Instagram y otras redes |
-| `make scrape-simev` | Extrae hechos relevantes de SIMEV y descarga PDFs |
-| `make scrape-all` | Ejecuta todos los scrapers en secuencia |
-| `make merge` | Consolida los reportes en un único archivo Markdown |
-| `make clean-ctx` | Limpia el archivo de conocimiento para el LLM |
-| `make build-knowledge` | Pipeline completo: merge + limpieza |
-| `make help` | Lista todos los comandos disponibles |
-
-El flujo completo de uso es:
-
-```bash
-make scrape-all       # 1. Recolectar información
-make build-knowledge  # 2. Consolidar y limpiar el contexto
-make app              # 3. Lanzar el chatbot
-```
-
-### Contexto en formato Markdown
-
-El archivo de conocimiento que se pasa al modelo está en formato **Markdown** (`.md`) en lugar de texto plano. Esto permite al LLM aprovechar la estructura semántica del documento: los encabezados `##` y `###` indican secciones, las tablas organizan datos clave, y los bloques `>` destacan publicaciones de redes sociales. El resultado es una mejor comprensión del contexto y respuestas más precisas.
-
-El pipeline de construcción genera tres archivos en `data/knowledge/`:
-
-1. `riopaila_castilla.md` — consolidación directa de todos los reportes
-2. `riopaila_castilla_clean.md` — versión limpia que consume el modelo ✅
-
-### Estructura del proyecto
-
-```
-TAMML---Tarea-1/
-├── .gitignore
-├── pyproject.toml                # Dependencias y configuración del paquete
-├── uv.lock                       # Lock file reproducible
-├── Makefile                      # Comandos de automatización
-├── README.md
-│
-├── src/
-│   └── riopaila_chatbot/
-│       ├── app.py                # Interfaz Gradio + cadena LangChain
-│       └── scrapers/
-│           ├── web.py            # Scraper del sitio web oficial
-│           ├── linkedin.py       # Scraper de LinkedIn
-│           ├── instagram.py      # Scraper de Instagram y otras redes
-│           └── simev.py          # Scraper de SIMEV + descarga de PDFs
-│
-├── scripts/
-│   ├── merge_reports.py          # Consolida reportes en un único .md
-│   └── clean_context.py          # Limpia el contexto para el LLM
-│
-├── data/
-│   ├── knowledge/
-│   │   ├── riopaila_castilla.md       # Contexto consolidado
-│   │   └── riopaila_castilla_clean.md # Contexto limpio (usado por el modelo)
-│   └── pdfs/                          # PDFs descargados de SIMEV
-│
-└── reports/                      # Reportes individuales por fuente (.md)
-    ├── reporte_web_riopaila.md
-    ├── reporte_linkedin_posts_riopaila.md
-    ├── reporte_instagram_posts_riopaila.md
-    └── reporte_simev_riopaila.md
-```
-
----
 ---
 
 # Módulo 2 — Agente conversacional (RAG + Tools + Memoria)
 
-El Módulo 2 evoluciona el chatbot del Módulo 1 hacia un **agente conversacional ReAct** con búsqueda semántica real, tools deterministas y memoria persistente. La interfaz Streamlit conserva las páginas del Módulo 1 (Inicio, Resumen, FAQ, Q&A) y añade una nueva: **Agente**.
-
-## Resumen rápido
-
-| Aspecto | Módulo 1 (Resumen / FAQ / Q&A) | Módulo 2 (Agente) |
-|---|---|---|
-| Recuperación | Léxica (palabras clave) | Semántica (embeddings + pgvector) |
-| Datos | 1 archivo Markdown | KB + 25 PDFs + tabla estructurada |
-| Decisión de qué consultar | Hardcoded | El agente decide (ReAct) |
-| Memoria | Solo sesión navegador | Persistente en Supabase |
-| Observabilidad | Ninguna | LangSmith |
-| Modelo | Groq Llama (gratis) | OpenAI gpt-4o-mini (pago) |
+Evoluciona el chatbot hacia un **agente ReAct** con búsqueda semántica real, tools deterministas y memoria persistente. La interfaz Streamlit conserva las páginas del Módulo 1 y añade la pestaña **Agente**.
 
 ## Arquitectura
 
@@ -236,231 +104,261 @@ El Módulo 2 evoluciona el chatbot del Módulo 1 hacia un **agente conversaciona
                      │   Streamlit (UI)     │
                      │   pagina_agente()    │
                      └──────────┬───────────┘
-                                │
                                 ▼
                      ┌──────────────────────┐
                      │  LangGraph ReAct     │   ← agent.py
                      │  (gpt-4o-mini)       │
                      │  temp=0.1 top_p=0.9  │
                      └──┬──────────────┬────┘
-                        │              │
             ┌───────────▼──┐    ┌──────▼────────────┐
             │ rag_search   │    │company_info_search│
             │ (RAG vector) │    │ (datos exactos)   │
             └──────┬───────┘    └──────────┬────────┘
-                   │                       │
                    ▼                       ▼
         ┌──────────────────────────────────────────┐
         │  Supabase (Postgres + pgvector)          │
         │  - documents      (2515 chunks, 1536d)   │
-        │  - company_info   (42 filas verificadas) │
+        │  - company_info   (datos verificados)    │
         │  - chat_messages  (memoria persistente)  │
         └──────────────────────────────────────────┘
 ```
 
-## Stack del Módulo 2
+## Stack
 
-- **LLM:** OpenAI `gpt-4o-mini` (tool-calling maduro, costo bajo, `temperature=0.1`, `top_p=0.9`)
-- **Embeddings:** OpenAI `text-embedding-3-small` (1536 dimensiones)
-- **Vector store:** Supabase Postgres + extensión `pgvector` (búsqueda por coseno con `match_documents()`)
-- **Agente:** LangGraph `create_react_agent` (loop ReAct con tool-calling nativo)
-- **Memoria:** clase `SupabaseChatHistory` que persiste cada turno (human / ai) en la tabla `chat_messages`
-- **Observabilidad:** LangSmith (proyecto `TAMLL`)
-- **Conversión PDF → Markdown:** `pymupdf4llm` (preserva tablas, encabezados y estructura)
+- **LLM:** OpenAI `gpt-4o-mini` (`temperature=0.1`, `top_p=0.9`, streaming).
+- **Embeddings:** OpenAI `text-embedding-3-small` (1536 dims).
+- **Vector store:** Supabase Postgres + `pgvector` (similitud coseno con `match_documents()`).
+- **Agente:** LangGraph `create_react_agent` (loop ReAct con tool-calling nativo).
+- **Memoria:** `SupabaseChatHistory` persiste cada turno (human/ai) en `chat_messages`.
+- **Observabilidad:** LangSmith (proyecto `TAMLL`).
+- **PDF → Markdown:** `pymupdf4llm` (preserva tablas y encabezados).
+- **Export:** "Descargar PDF" de la conversación con diseño institucional (`fpdf2`).
 
-## Pipeline ETL completo (extraer → transformar → cargar)
+## Las dos herramientas del agente
 
-Desde cero, el pipeline para tener el agente operativo es:
+| Tool | Tipo | Uso |
+|---|---|---|
+| `rag_search(query)` | Semántica | Preguntas narrativas/históricas → embedde la query y llama a `match_documents()` (top-k=12). |
+| `company_info_search(category)` | Determinista | Datos exactos (NIT, teléfonos, emails, cifras, sedes) → consulta `company_info` (9 categorías). |
 
-### Paso 1 — Configuración de credenciales
-
-Crea un archivo `.env` en la raíz con:
-
-```dotenv
-# OpenAI
-OPENAI_API_KEY=sk-proj-...
-LLM_MODEL=gpt-4o-mini
-EMBEDDING_MODEL=text-embedding-3-small
-
-# Supabase
-SUPABASE_URL=https://<tu-proyecto>.supabase.co
-SUPABASE_KEY=<tu-anon-key>
-
-# LangSmith (opcional pero recomendado)
-LANGSMITH_TRACING=true
-LANGSMITH_API_KEY=lsv2_pt_...
-LANGSMITH_PROJECT=TAMLL
-
-# Chunking
-CHUNK_SIZE=1200          # overlap = 20% automático
-RAG_TOP_K=5
-
-# Módulo 1 (legado)
-GROQ_API_KEY=gsk_...
-```
-
-### Paso 2 — Crear las tablas en Supabase
-
-Ejecuta en el SQL Editor del dashboard de Supabase **en este orden**:
-
-1. Habilitar pgvector: `Dashboard → Database → Extensions → vector`
-2. Correr `supabase/migrations/001_init.sql` (crea `documents`, `chat_messages`, `company_info`, índice IVFFLAT, función `match_documents`)
-3. Correr `supabase/seeds/company_info.sql` (42 filas de datos estructurados verificados)
-4. **Importante:** desactivar Row Level Security para las 3 tablas en modo dev:
-   ```sql
-   ALTER TABLE documents       DISABLE ROW LEVEL SECURITY;
-   ALTER TABLE chat_messages   DISABLE ROW LEVEL SECURITY;
-   ALTER TABLE company_info    DISABLE ROW LEVEL SECURITY;
-   ```
-
-### Paso 3 — Convertir los PDFs a Markdown
-
-Coloca los PDFs en `data/pdfs/` y ejecuta:
+## Pipeline ETL (desde cero)
 
 ```bash
-make convert-pdfs
+# 1. Credenciales — crear .env (ver .env.example)
+# 2. Supabase — correr supabase/migrations/001_init.sql + supabase/seeds/company_info.sql
+make convert-pdfs    # 3. PDFs → Markdown (pymupdf4llm)  → data/knowledge/pdfs/
+make ingest          # 4. chunks + embeddings + upload a Supabase  (~2515 chunks)
+make app             # 5. lanzar Streamlit en http://localhost:8501
 ```
 
-Esto procesa los 25 PDFs (informes trimestrales, sostenibilidad, código país, comunicados de JD, convocatorias AGA, etc.) usando `pymupdf4llm` y los guarda como Markdown limpio en `data/knowledge/pdfs/`.
+`ingest.py`: recopila el `.md` principal + 25 PDFs convertidos → chunking jerárquico (encabezados → párrafos → oraciones, overlap 20%) → embeddings en lotes de 100 → upload a `documents` con metadata `{fuente, seccion, posicion, total_chunks}`.
 
-### Paso 4 — Ingestar todo a Supabase (RAG)
-
-```bash
-make ingest
-```
-
-El script `src/riopaila_rag/ingest.py`:
-
-1. Recopila `data/knowledge/riopaila_castilla_clean.md` + los 25 `.md` de `pdfs/` (26 archivos).
-2. Pide confirmación interactiva (o `--force` para saltarla).
-3. Limpia la tabla `documents` de Supabase.
-4. Chunkea con la estrategia jerárquica (encabezados → párrafos → oraciones, overlap 20%).
-5. Llama a OpenAI en lotes de 100 chunks para generar embeddings (`text-embedding-3-small`).
-6. Sube los registros a `documents` con metadata `{fuente, seccion, posicion, total_chunks}`.
-
-Resultado típico: **2.515 chunks** indexados, costo ~USD 0.10.
-
-### Paso 5 — Lanzar la aplicación
-
-```bash
-make app
-```
-
-La app abre en `http://localhost:8501` con 5 pestañas en el sidebar.
-
-## Las 5 pestañas de la aplicación
+## Las 5 pestañas de la app
 
 | Pestaña | Módulo | Modelo | Datos | Memoria |
 |---|---|---|---|---|
 | Inicio | — | — | — | — |
-| Resumen | 1 | Groq Llama | KB consolidado | No |
-| FAQ | 1 | Groq Llama | KB consolidado | No |
-| Q&A | 1 | Groq Llama | KB consolidado | Sesión navegador |
+| Resumen | 1 | Groq Qwen3 | KB consolidado | No |
+| FAQ | 1 | Groq Qwen3 | KB consolidado | No |
+| Q&A | 1 | Groq Qwen3 | KB consolidado | Sesión navegador |
 | **Agente** | **2** | **OpenAI gpt-4o-mini** | **Supabase (vector + structured)** | **Supabase persistente** |
 
-### 1. Inicio
-Portada institucional con hero carrusel y tarjetas que llevan a cada sección. Contiene la tarjeta "Agente" con degradado verde → naranja.
+---
 
-### 2. Resumen (Módulo 1)
-Genera resumen ejecutivo, propósito, líneas de negocio y mensaje de cierre llamando a Groq Llama con recuperación léxica del archivo consolidado.
+# Módulo 3 — Agente corporativo sobre OpenFang Agent OS (Ruta B)
 
-### 3. FAQ (Módulo 1)
-Lista de preguntas predefinidas; al pulsar una, el LLM responde con base en fragmentos seleccionados por palabras clave.
+Evolución hacia un **Sistema Operativo Agéntico** usando **[OpenFang](https://github.com/RightNow-AI/openfang)** (Agent OS escrito en **Rust**, MIT/Apache-2.0), con arquitectura **multi-agente** y memoria nativa del OS. Cumple la **Ruta B** de la entrega.
 
-### 4. Q&A (Módulo 1)
-Campo de pregunta libre. Mantiene historial en `st.session_state` (se pierde al recargar). Sin embeddings, sin vectores.
-
-### 5. Agente (Módulo 2)
-Chat conversacional con un **agente ReAct** que decide autónomamente cuándo invocar cada tool. Cómo usarlo:
-
-1. Escribe la pregunta y pulsa **Enter** (o haz clic en **Enviar**).
-2. La pregunta aparece inmediatamente en la burbuja del usuario.
-3. Un spinner "Generando respuesta…" indica que el agente está procesando (decidiendo tools, consultando Supabase, generando texto).
-4. La respuesta aparece dentro de la burbuja del bot, con la sección **Fuentes** al final.
-5. En la **columna izquierda** aparece el panel desplegable `Ver fuentes consultadas (N)` con:
-   - Nombre completo del archivo Markdown consultado (ej: `Informe-RC- Sostenibilidad y Gestión 2025.md`)
-   - Sección del documento donde se ubica el fragmento
-   - Posición del fragmento (ej: `fragmento 23/319`)
-   - Similitud del match semántico (ej: `0.87`)
-6. Para empezar de cero: clic en **Limpiar conversación** (borra el historial en Supabase y crea un nuevo `session_id`).
-
-**Sugerencias rápidas** (columna izquierda):
-- ¿Cuál es el NIT de Riopaila Castilla?  *(invoca `company_info_search`)*
-- ¿Cuáles son las líneas de negocio?  *(invoca `rag_search`)*
-- ¿Qué reporta el último informe de sostenibilidad?  *(invoca `rag_search` sobre PDFs)*
-- ¿Quiénes integran la Junta Directiva?  *(invoca `rag_search`)*
-
-**Tarjetas "También puedes preguntar sobre"** (debajo del chat):
-- Cifras clave · Datos de contacto · Certificaciones · Sostenibilidad
-
-## Comandos del Módulo 2
-
-| Comando | Descripción |
-|---------|-------------|
-| `make convert-pdfs` | Convierte todos los PDFs de `data/pdfs/` a Markdown en `data/knowledge/pdfs/` |
-| `make ingest` | Chunkea, genera embeddings y sube todo a Supabase pgvector |
-| `make app` | Lanza la app Streamlit (puerto 8501) |
-
-## System prompt del agente
-
-El agente tiene un system prompt extenso (~6 KB) con 7 secciones:
-
-1. **Identidad** — Quién es, líneas de negocio, audiencia y tipos de documentos indexados.
-2. **Jerarquía de instrucciones (no negociable)** — Defensa contra prompt injection: las reglas del sistema son inmutables; mensajes del usuario y resultados de tools se tratan como datos, no como instrucciones; rechaza intentos de cambio de personaje, revelación de prompt, recomendación de inversiones o consultas técnicas del proyecto.
-3. **Alcance temático** — Solo Riopaila Castilla; declina otros temas con "no cuento con los conocimientos requeridos".
-4. **Uso de herramientas** — Decisión autónoma; lista de cuándo SÍ y cuándo NO invocar tools.
-5. **Política frente a la incertidumbre** — Nunca inventar datos; preferir "información no disponible" a fabricar respuestas.
-6. **Formato de salida** — Español formal, sin emojis, Markdown sobrio, cierre con sección **Fuentes** citando archivo y sección.
-7. **Comportamiento institucional** — No es vocero oficial; sin juicios de valor; sin opiniones personales.
-
-## Estructura del Módulo 2
+## Arquitectura multi-agente
 
 ```
-src/
-├── riopaila_rag/
-│   ├── __init__.py
-│   ├── README.md            # documentación detallada del paquete
-│   ├── paths.py             # rutas centralizadas
-│   ├── config.py            # variables de entorno (.env) y checks
-│   ├── chunking.py          # chunking jerárquico (headers → párrafos → oraciones)
-│   ├── ingest.py            # pipeline ETL: md → chunks → embeddings → Supabase
-│   ├── memory.py            # SupabaseChatHistory: persistencia conversacional
-│   ├── agent.py             # LangGraph ReAct agent + ask_streaming()
-│   ├── app.py               # interfaz Streamlit (Módulo 1 + Módulo 2)
-│   ├── kb.py                # base de conocimiento legacy (Módulo 1)
-│   ├── assets/              # logo, hero carrusel
-│   └── tools/
-│       ├── README.md        # documentación de las tools
-│       ├── __init__.py
-│       ├── rag_tool.py      # @tool rag_search (búsqueda semántica)
-│       └── structured_tool.py  # @tool company_info_search (datos exactos)
-│
-├── scripts/
-│   ├── README.md            # documentación de los scripts ETL
-│   ├── merge_reports.py     # legacy módulo 1: consolida reports/*.md
-│   ├── clean_context.py     # legacy módulo 1: limpia el contexto
-│   └── convert_pdfs.py      # nuevo módulo 2: PDFs → Markdown (pymupdf4llm)
-│
-└── riopaila_chatbot/        # paquete legacy del Módulo 1 (scrapers)
+                    Telegram (@RioPaila_Bot)
+                          │  telegram_bridge.py (long-polling)
+                          ▼
+         ┌─────────────────────────────────────────────┐
+         │  OpenFang Kernel (daemon, API+dashboard :4200)│
+         │  API compatible con OpenAI · modelo gpt-4o-mini│
+         └───────────────┬─────────────────────────────┘
+                         ▼
+              ┌────────────────────────┐
+              │ riopaila-coordinador   │  router: clasifica y delega (agent_send)
+              └───────┬───────────┬────┘
+                      ▼           ▼
+        ┌──────────────────┐  ┌────────────────────────┐
+        │ riopaila-faq     │  │ riopaila-institucional │
+        │ (rápida, ≤3 frases)│ │ (detallada/histórica)  │
+        └──────────────────┘  └────────────────────────┘
 
-supabase/
-├── migrations/
-│   └── 001_init.sql         # crea documents / chat_messages / company_info + función match_documents
-└── seeds/
-    └── company_info.sql     # 42 filas de datos estructurados verificados
+        Hand autónomo:  riopaila-inteligencia  (vigilancia sectorial programada)
+        Memoria OpenFang:  KV Store (43 datos) + Vector Store (documentos)
 ```
 
-## Tecnologías añadidas en el Módulo 2
+**4 agentes corriendo en paralelo.** El coordinador recibe la consulta, la delega (`agent_send`) en el especialista FAQ o institucional, y devuelve la respuesta indicando quién respondió.
 
-- **LangChain + LangGraph** (orquestación del agente ReAct)
-- **OpenAI SDK** (LLM + embeddings)
-- **Supabase Python SDK** (`supabase-py==2.3.8`, fijado por compatibilidad con Python 3.14)
-- **pgvector** (búsqueda vectorial en Postgres)
-- **pymupdf4llm** (conversión PDF → Markdown estructurado)
-- **tiktoken** (conteo de tokens)
-- **LangSmith** (observabilidad y tracing)
+## Componentes
 
-## Notas de compatibilidad
+| Componente | Detalle |
+|---|---|
+| **Kernel** | OpenFang v0.6.9, daemon en `127.0.0.1:4200`, API OpenAI-compatible. |
+| **Modelo** | `gpt-4o-mini` (fiable en el agent-loop). Ruta local Ollama (gemma3:4b / qwen2.5:3b a **100% GPU**) instalada y documentada. |
+| **Agente institucional** | Datos verificados como **identidad base** en el system prompt (anti-alucinación: NIT, 1918, certificaciones). |
+| **Agente FAQ** | Respuestas cortas (`temp 0`, `max_tokens 512`, `seed 7`). |
+| **Coordinador (router)** | Delega vía `agent_send` (`tools = [agent_list, agent_send, memory_recall]`). |
+| **KV Store** | 43 datos estructurados (de `company_info.sql`) cargados con `seed_openfang_kv.py`. |
+| **Memoria semántica** | Documentos ingeridos con `ingest_openfang.py` (API OpenAI-compatible del OS). |
+| **Hand autónomo** | `riopaila-inteligencia` — `HAND.toml` + `SKILL.md` (vigilancia sectorial programada). |
+| **Canal** | Telegram `@RioPaila_Bot` vía `telegram_bridge.py` (sortea el bug 404 del canal nativo en v0.6.9). |
 
-- Python 3.14 requiere fijar `supabase==2.3.8`, `gotrue>=2.4,<2.5` y `httpx>=0.24,<0.26` (algunas versiones más nuevas dependen de `onnxruntime==1.20.1` que no tiene wheels para `cp314`).
-- Row Level Security debe estar desactivado en las 3 tablas para que la `anon key` pueda leer/escribir en modo dev. Para producción se deben configurar policies adecuadas.
+## Comandos del Módulo 3
+
+```bash
+make openfang-start     # arranca el daemon (API + dashboard :4200)
+make openfang-spawn     # despliega institucional + faq + coordinador
+make openfang-migrate   # carga KV Store + memoria semántica (= openfang-kv + openfang-ingest)
+make openfang-hand      # instala y activa el Hand de inteligencia sectorial
+make openfang-telegram  # arranca el puente Telegram ↔ agente (bot @RioPaila_Bot)
+make openfang-status    # estado del daemon y agentes
+```
+
+> Configuración del OS en `openfang/config.toml.example` → copiar a `~/.openfang/config.toml`.
+> Guía reproducible paso a paso: **[`docs/runbook-openfang.md`](docs/runbook-openfang.md)**.
+> Documento de entrega: **[`docs/entrega-modulo3-openfang.md`](docs/entrega-modulo3-openfang.md)**.
+
+---
+
+# Ruta Transversal B (opcional) — Análisis de comportamiento con t-SNE
+
+Sobre el historial de interacciones del agente OpenFang (sesiones JSONL), se proyectan las intenciones de los usuarios en 2D para descubrir clústeres.
+
+```bash
+make tsne-seed   # siembra interacciones representativas (8 intenciones × 6 formulaciones)
+make tsne        # genera el análisis t-SNE (PNG + interpretación de clústeres)
+```
+
+- **Extracción:** lee `~/.openfang/workspaces/riopaila*/sessions/*.jsonl`.
+- **Vectorización:** embeddings `text-embedding-3-small` (cacheados en `data/analysis/`).
+- **Reducción:** `t-SNE` (scikit-learn, métrica coseno) + **KMeans** para descubrir agrupaciones.
+- **Salida:** `data/analysis/tsne_intenciones.png` + pureza por clúster. Notebook en `notebooks/analisis_tsne.ipynb`.
+
+> Requiere el extra de dependencias de análisis: `uv sync --extra analysis`.
+> Interpretación detallada en **[`docs/analisis-tsne.md`](docs/analisis-tsne.md)**.
+
+---
+
+## Instalación y ejecución
+
+El proyecto usa **[uv](https://github.com/astral-sh/uv)** como gestor de entorno y dependencias (reemplaza `pip` + `venv`). Todo está declarado en `pyproject.toml` y bloqueado en `uv.lock`.
+
+```bash
+# 1. Instalar uv (una vez)
+#    Windows (PowerShell):  irm https://astral.sh/uv/install.ps1 | iex
+#    Linux/macOS:           curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 2. Reproducir el entorno
+uv sync                      # dependencias base (Módulos 1 y 2)
+uv sync --extra analysis     # + numpy/scikit-learn/matplotlib (Ruta B t-SNE)
+
+# 3. Configurar credenciales
+cp .env.example .env         # y rellenar las claves (ver más abajo)
+
+# 4. Lanzar la app (Módulos 1 y 2)
+make app                     # http://localhost:8501
+```
+
+### Variables de entorno (`.env`)
+
+```dotenv
+OPENAI_API_KEY=sk-...                 # Módulo 2 (agente + embeddings) y Módulo 3
+LLM_MODEL=gpt-4o-mini
+EMBEDDING_MODEL=text-embedding-3-small
+SUPABASE_URL=https://<proyecto>.supabase.co
+SUPABASE_KEY=eyJ...                   # clave anon (Legacy JWT)
+GROQ_API_KEY=gsk_...                  # Módulo 1
+LANGCHAIN_TRACING_V2=true             # LangSmith (Módulo 2)
+LANGCHAIN_API_KEY=lsv2_pt_...
+LANGCHAIN_PROJECT=TAMLL
+TELEGRAM_BOT_TOKEN=123456789:AA...    # Módulo 3 (bot de Telegram)
+```
+
+Variables opcionales: `RAG_TOP_K` (def. 12), `CHUNK_SIZE` (def. 1200), `KB_MAX_CONTEXT_CHARS`.
+
+---
+
+## Estructura del repositorio
+
+```
+TAMML---Tarea-1/
+├── pyproject.toml              # dependencias (uv) + extra [analysis]
+├── uv.lock · Makefile · README.md · CONTEXT.md
+├── .env.example
+│
+├── src/
+│   ├── riopaila_chatbot/       # Módulo 1 — scrapers
+│   │   └── scrapers/           # web.py · linkedin.py · instagram.py · simev.py
+│   ├── riopaila_rag/           # Módulos 1 y 2 — app + agente
+│   │   ├── app.py              # interfaz Streamlit (5 pestañas)
+│   │   ├── agent.py            # LangGraph ReAct + ask_streaming()
+│   │   ├── kb.py               # lógica Q&A léxica (Módulo 1)
+│   │   ├── chunking.py · ingest.py · memory.py · config.py · paths.py
+│   │   ├── agent_chat_pdf.py   # export de conversación a PDF (fpdf2)
+│   │   └── tools/              # rag_tool.py · structured_tool.py
+│   └── scripts/                # ETL + Módulo 3 + Ruta B
+│       ├── merge_reports.py · clean_context.py · convert_pdfs.py
+│       ├── seed_openfang_kv.py · ingest_openfang.py · telegram_bridge.py
+│       └── seed_interactions.py · tsne_analysis.py
+│
+├── openfang/                   # Módulo 3 — manifiestos del Agent OS
+│   ├── riopaila-institucional/agent.toml
+│   ├── riopaila-faq/agent.toml
+│   ├── riopaila-coordinador/agent.toml
+│   ├── hands/riopaila-inteligencia/  (HAND.toml · SKILL.md)
+│   ├── config.toml.example · Modelfile.gemma3-gpu
+│
+├── supabase/
+│   ├── migrations/001_init.sql # documents · chat_messages · company_info + match_documents()
+│   └── seeds/company_info.sql  # datos estructurados verificados (9 categorías)
+│
+├── data/
+│   ├── knowledge/              # KB consolidado + 25 PDFs → Markdown
+│   └── analysis/               # salidas del t-SNE (Ruta B)
+├── notebooks/analisis_tsne.ipynb
+└── docs/                       # documentación de entrega (runbook, t-SNE, etc.)
+```
+
+---
+
+## Seguridad y buenas prácticas
+
+- **Secretos:** todas las claves se leen del `.env` (en `.gitignore`, nunca versionado). No hay secretos hardcodeados en el código.
+- **Anti–prompt injection:** los system prompts establecen una jerarquía de instrucciones inmutable; el contenido del usuario y de las tools se trata como **datos, no órdenes** (Módulos 2 y 3).
+- **Anti-alucinación:** datos verificados como identidad base; política explícita de "no inventar" y declinar cuando falta información.
+- **XSS:** el render de las burbujas escapa el input del usuario y convierte el Markdown del modelo con `markdown-it` (`html: False`), neutralizando HTML/JS crudo.
+- **Supabase:** en desarrollo se usa la `anon key` con RLS desactivada; **para producción deben configurarse políticas RLS** en las 3 tablas.
+- **Telegram:** `allowed_users = []` deja el bot abierto para la demo; para uso real, restringir con la lista de IDs permitidos.
+
+### Notas de compatibilidad
+
+- Python 3.10+ (probado en 3.12). Se fija `supabase==2.3.8`, `gotrue>=2.4,<2.5`, `httpx>=0.24,<0.26` por compatibilidad.
+- `config.py` se importa **antes** que cualquier módulo de LangChain para que `load_dotenv()` cargue el entorno antes de inicializar el tracing de LangSmith.
+
+---
+
+## Documentación
+
+| Documento | Contenido |
+|---|---|
+| [`CONTEXT.md`](CONTEXT.md) | Contexto técnico completo del proyecto (decisiones, problemas resueltos). |
+| [`docs/ENTREGA-3.md`](docs/ENTREGA-3.md) | **Guía de la Entrega 3 (Ruta B): qué mostrar y dónde está cada punto de la rúbrica.** |
+| [`docs/runbook-openfang.md`](docs/runbook-openfang.md) | Guía reproducible paso a paso del Módulo 3. |
+| [`docs/entrega-modulo3-openfang.md`](docs/entrega-modulo3-openfang.md) | Documento de entrega del Módulo 3. |
+| [`docs/analisis-tsne.md`](docs/analisis-tsne.md) | Análisis e interpretación del t-SNE (Ruta B). |
+| READMEs por carpeta | `src/riopaila_rag/`, `.../tools/`, `src/scripts/`, `openfang/`, `supabase/`. |
+
+---
+
+## Autores
+
+- Nelcy Lucia Zapata Gil – 22502267
+- Valentina Isaza Ospina – 22502266
+- Oscar Fernando Pulgarin – 22500224
+- Juan Andres Lopez – 2226490
